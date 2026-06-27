@@ -1,277 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="theme-color" content="#050509" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#050509"/>
 <title>Taco</title>
 <style>
-  :root {
-    --bg: #050509;
-    --green: #30d158;
-    --green-soft: rgba(48, 209, 88, 0.18);
-    --text: rgba(255,255,255,0.82);
-    --muted: rgba(255,255,255,0.42);
-    --panel: rgba(0,0,0,0.96);
-    --purple: #7f77dd;
-    --orange: #ff9f0a;
-    --red: #ff453a;
-  }
+:root{--bg:#050509;--green:#30d158;--purple:#7f77dd;--orange:#ff9f0a;--red:#ff453a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;touch-action:manipulation;-webkit-user-select:none;user-select:none;}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--text);
-    touch-action: manipulation;
-    -webkit-user-select: none;
-    user-select: none;
-  }
+#wakeLight{position:fixed;top:calc(14px + env(safe-area-inset-top));left:calc(14px + env(safe-area-inset-left));width:11px;height:11px;border-radius:50%;background:var(--green);opacity:0.25;z-index:10;box-shadow:0 0 12px rgba(48,209,88,0.25);}
+#wakeLight.on{opacity:0.9;animation:wPulse 1.8s infinite;}
+#wakeLight.active{opacity:1;background:var(--orange);box-shadow:0 0 16px rgba(255,159,10,0.8);animation:none;}
+#wakeLight.off{background:var(--red);opacity:0.9;}
+@keyframes wPulse{0%,100%{transform:scale(1);opacity:0.95;}50%{transform:scale(0.72);opacity:0.35;}}
 
-  canvas {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    display: block;
-  }
+#gear{position:fixed;top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:17px;cursor:pointer;z-index:20;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;}
 
-  #wakeLight {
-    position: fixed;
-    top: calc(14px + env(safe-area-inset-top));
-    left: calc(14px + env(safe-area-inset-left));
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: var(--green);
-    opacity: 0.25;
-    z-index: 10;
-    box-shadow: 0 0 12px rgba(48,209,88,0.25);
-  }
-  #wakeLight.on { opacity: 0.9; animation: wPulse 1.8s infinite; }
-  #wakeLight.active { opacity: 1; background: var(--orange); box-shadow: 0 0 16px rgba(255,159,10,0.8); animation: none; }
-  #wakeLight.off { background: var(--red); opacity: 0.9; box-shadow: 0 0 14px rgba(255,69,58,0.55); }
-  @keyframes wPulse { 0%,100% { transform: scale(1); opacity: 0.95; } 50% { transform: scale(0.72); opacity: 0.35; } }
+#ui{position:fixed;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom));width:100%;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding:0 18px;pointer-events:none;}
+#status{min-height:18px;width:min(88vw,720px);font-size:clamp(10px,1.7vw,13px);color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;text-align:center;line-height:1.35;}
 
-  #gear {
-    position: fixed;
-    top: calc(12px + env(safe-area-inset-top));
-    right: calc(12px + env(safe-area-inset-right));
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.4);
-    font-size: 17px;
-    cursor: pointer;
-    z-index: 20;
-    display: grid;
-    place-items: center;
-    -webkit-tap-highlight-color: transparent;
-  }
+#tapBtn{pointer-events:auto;width:64px;height:64px;min-width:64px;min-height:64px;border-radius:50%;border:1px solid rgba(48,209,88,0.36);background:rgba(48,209,88,0.08);color:rgba(48,209,88,0.74);font-size:24px;cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;box-shadow:0 0 18px rgba(48,209,88,0.08);}
+#tapBtn.hot{border-color:var(--red);background:rgba(255,69,58,0.18);color:var(--red);}
 
-  /* centered layout with mic below eyes */
-  #ui {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(18px + env(safe-area-inset-bottom));
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 0 18px;
-    pointer-events: none;
-  }
-  #status {
-    min-height: 18px;
-    width: min(88vw, 720px);
-    font-size: clamp(10px, 1.7vw, 13px);
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-align: center;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-  }
-  #response {
-    width: min(88vw, 760px);
-    max-height: 18vh;
-    overflow-y: auto;
-    font-size: clamp(12px, 1.8vw, 14px);
-    color: rgba(255,255,255,0.76);
-    text-align: center;
-    line-height: 1.38;
-    overflow-wrap: anywhere;
-  }
-  #tapBtn {
-    pointer-events: auto;
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
-    border-radius: 50%;
-    border: 1px solid rgba(48,209,88,0.36);
-    background: rgba(48,209,88,0.08);
-    color: rgba(48,209,88,0.74);
-    font-size: 24px;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 0 18px rgba(48,209,88,0.08);
-  }
-  #tapBtn.hot { border-color: var(--red); background: rgba(255,69,58,0.18); color: var(--red); }
+#startOverlay{position:fixed;inset:0;z-index:25;display:none;align-items:center;justify-content:center;padding:22px;background:radial-gradient(circle at center,rgba(48,209,88,0.13),rgba(0,0,0,0.94) 60%);text-align:center;}
+#startOverlay.open{display:flex;}
+#startCard{width:min(430px,92vw);padding:22px;border:1px solid rgba(48,209,88,0.22);border-radius:22px;background:rgba(8,8,14,0.92);box-shadow:0 18px 60px rgba(0,0,0,0.55);}
+#startCard h1{color:var(--green);font-size:28px;margin-bottom:8px;}
+#startCard p{color:rgba(255,255,255,0.68);font-size:14px;line-height:1.45;margin-bottom:16px;}
+#startBtn{width:100%;padding:15px 16px;border:none;border-radius:14px;background:var(--green);color:#020302;font-size:16px;font-weight:800;cursor:pointer;}
 
-  #startOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 25;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-    background: radial-gradient(circle at center, rgba(48,209,88,0.13), rgba(0,0,0,0.94) 60%);
-    text-align: center;
-  }
-  #startOverlay.open { display: flex; }
-  #startCard {
-    width: min(430px, 92vw);
-    padding: 22px;
-    border: 1px solid rgba(48,209,88,0.22);
-    border-radius: 22px;
-    background: rgba(8,8,14,0.92);
-    box-shadow: 0 18px 60px rgba(0,0,0,0.55);
-  }
-  #startCard h1 { color: var(--green); font-size: 28px; margin-bottom: 8px; }
-  #startCard p { color: rgba(255,255,255,0.68); font-size: 14px; line-height: 1.45; margin-bottom: 16px; }
-  #startBtn {
-    width: 100%;
-    padding: 15px 16px;
-    border: none;
-    border-radius: 14px;
-    background: var(--green);
-    color: #020302;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-  #startSmall { margin-top: 12px; color: rgba(255,255,255,0.38); font-size: 12px; line-height: 1.35; }
-
-  #panel {
-    position: fixed;
-    inset: 0;
-    background: var(--panel);
-    z-index: 30;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
-    overflow-y: auto;
-  }
-  #panel.open { display: flex; }
-  #panelInner { width: min(560px, 94vw); display: flex; flex-direction: column; gap: 10px; }
-  #panel h2 { color: var(--green); font-size: 22px; margin-bottom: 2px; text-align: center; }
-  .hint { color: rgba(255,255,255,0.48); font-size: 12px; line-height: 1.35; text-align: center; margin-bottom: 5px; }
-  #panel label { color: rgba(255,255,255,0.48); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: -5px; }
-  #panel input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.13);
-    background: rgba(255,255,255,0.06);
-    color: white;
-    font-size: 13px;
-    outline: none;
-  }
-  #panel input::placeholder { color: rgba(255,255,255,0.2); }
-  #saveBtn, #testVoiceBtn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
-    background: var(--green);
-    color: black;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  #testVoiceBtn { background: rgba(255,255,255,0.11); color: rgba(255,255,255,0.78); }
-  #cancelBtn { color: rgba(255,255,255,0.42); font-size: 13px; cursor: pointer; text-align: center; padding: 6px; }
-
-  #rotateHint {
-    position: fixed;
-    left: 50%;
-    bottom: calc(98px + env(safe-area-inset-bottom));
-    transform: translateX(-50%);
-    z-index: 11;
-    color: rgba(255,255,255,0.38);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    text-align: center;
-    display: none;
-    pointer-events: none;
-  }
-
-  @media (orientation: portrait) {
-    #rotateHint { display: block; }
-    #response { max-height: 20vh; }
-  }
+#panel{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));overflow-y:auto;}
+#panel.open{display:flex;}
+#panelInner{width:min(560px,94vw);display:flex;flex-direction:column;gap:10px;}
+#panel h2{color:var(--green);font-size:22px;margin-bottom:2px;text-align:center;}
+.hint{color:rgba(255,255,255,0.48);font-size:12px;line-height:1.35;text-align:center;margin-bottom:5px;}
+#panel label{color:rgba(255,255,255,0.48);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:-5px;}
+#panel input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.13);background:rgba(255,255,255,0.06);color:white;font-size:13px;outline:none;}
+#panel input::placeholder{color:rgba(255,255,255,0.2);}
+#saveBtn,#testVoiceBtn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--green);color:black;font-size:15px;font-weight:700;cursor:pointer;}
+#testVoiceBtn{background:rgba(255,255,255,0.11);color:rgba(255,255,255,0.78);}
+#cancelBtn{color:rgba(255,255,255,0.42);font-size:13px;cursor:pointer;text-align:center;padding:6px;}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="wakeLight" class="off"></div>
 <div id="gear" title="Settings">&#9881;</div>
-
 <div id="ui">
-  <div id="response"></div>
   <div id="status">Tap Start</div>
   <button id="tapBtn" title="Tap to talk">&#127908;</button>
 </div>
-<div id="rotateHint">Best in landscape. Add to Home Screen for the cleanest robot face.</div>
 
 <div id="startOverlay" class="open">
   <div id="startCard">
     <h1>&#127790; Taco</h1>
-    <p>Tap once to unlock microphone and audio. After that, keep Chrome open and say <b>“Taco”</b>.</p>
+    <p>Tap once to unlock microphone and audio. Then say <b>"Taco"</b> anytime.</p>
     <button id="startBtn">Start Taco</button>
-    <div id="startSmall">Android Chrome can stop Web Speech after silence, so Taco automatically restarts the listener. The mic button below the eyes is the backup.</div>
   </div>
 </div>
 
 <div id="panel">
   <div id="panelInner">
     <h2>&#127790; Taco Settings</h2>
-    <div class="hint">Keys are saved only in this browser’s localStorage. For real security, use a small backend proxy instead of putting API keys in a phone browser.</div>
-
+    <div class="hint">Keys saved in browser only.</div>
     <label>Anthropic Key (Claude)</label>
-    <input type="password" id="kAnt" placeholder="sk-ant-..." autocomplete="off" />
-
-    <label>Claude model</label>
-    <input type="text" id="kClaudeModel" placeholder="claude-haiku-4-5-20251001" autocomplete="off" />
-
+    <input type="password" id="kAnt" placeholder="sk-ant-..." autocomplete="off"/>
+    <label>Claude Model</label>
+    <input type="text" id="kClaudeModel" placeholder="claude-haiku-4-5" autocomplete="off"/>
     <label>OpenAI Key (fallback)</label>
-    <input type="password" id="kOAI" placeholder="sk-proj-..." autocomplete="off" />
-
-    <label>OpenAI fallback model</label>
-    <input type="text" id="kOpenAIModel" placeholder="gpt-4o-mini" autocomplete="off" />
-
+    <input type="password" id="kOAI" placeholder="sk-proj-..." autocomplete="off"/>
     <label>ElevenLabs Key</label>
-    <input type="password" id="kEl" placeholder="sk_..." autocomplete="off" />
-
+    <input type="password" id="kEl" placeholder="sk_..." autocomplete="off"/>
     <label>ElevenLabs Voice ID</label>
-    <input type="text" id="kVoice" placeholder="pNInz6obpgDQGcFmaJgB" autocomplete="off" />
-
+    <input type="text" id="kVoice" placeholder="pNInz6obpgDQGcFmaJgB" autocomplete="off"/>
     <label>OpenWeatherMap Key</label>
-    <input type="password" id="kWx" placeholder="optional" autocomplete="off" />
-
+    <input type="password" id="kWx" placeholder="optional" autocomplete="off"/>
     <button id="testVoiceBtn">Test Voice</button>
     <button id="saveBtn">Save and Start</button>
     <span id="cancelBtn">Cancel</span>
@@ -281,1053 +89,785 @@
 <script>
 'use strict';
 
-// =====================
-// CONFIG / STORAGE
-// =====================
-const STORAGE_PREFIX = 'taco_';
-function LS(k, fallback = '') {
-  try { return localStorage.getItem(STORAGE_PREFIX + k) || fallback; }
-  catch (_) { return fallback; }
-}
-function saveLS(k, v) {
-  try { localStorage.setItem(STORAGE_PREFIX + k, v || ''); }
-  catch (e) { console.warn('localStorage save failed:', e); }
-}
-
-const cfg = {
-  ant: LS('ant'),
-  oai: LS('oai'),
-  el: LS('el'),
-  voice: LS('voice', 'pNInz6obpgDQGcFmaJgB'),
-  wx: LS('wx'),
-  claudeModel: LS('claudeModel', 'claude-haiku-4-5-20251001'),
-  openAIModel: LS('openAIModel', 'gpt-4o-mini')
+// ── CONFIG ──
+const SP = 'taco_';
+function LS(k,fb=''){try{return localStorage.getItem(SP+k)||fb;}catch(_){return fb;}}
+function saveLS(k,v){try{localStorage.setItem(SP+k,v||'');}catch(e){}}
+const cfg={
+  ant:LS('ant'), oai:LS('oai'), el:LS('el'),
+  voice:LS('voice','pNInz6obpgDQGcFmaJgB'),
+  wx:LS('wx'),
+  claudeModel:LS('claudeModel','claude-haiku-4-5')
 };
 
-// =====================
-// UI HELPERS
-// =====================
-const $ = (id) => document.getElementById(id);
-function setMode(m) { faceMode = m; }
-function setStatus(t) { $('status').textContent = t || ''; }
-function setResponse(t) { $('response').textContent = t || ''; }
-function setWakeLight(s) { $('wakeLight').className = s === 'on' ? 'on' : s === 'active' ? 'active' : 'off'; }
-function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+// ── UI ──
+const $=id=>document.getElementById(id);
+function setStatus(t){$('status').textContent=t||'';}
+function setWakeLight(s){$('wakeLight').className=s==='on'?'on':s==='active'?'active':'off';}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function supportsSR(){return Boolean(window.SpeechRecognition||window.webkitSpeechRecognition);}
+function SRCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition;}
 
-function supportsSpeechRecognition() {
-  return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
+// ── CANVAS ──
+const canvas=$('c');
+const ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+let W=0,H=0,DPR=1,cx=0,cy=0,frame=0;
+let faceMode='idle';
+
+// Eye animation state
+let blinkV=1, blinkT=0;
+let eyeOpenness=1.0;      // 0=closed 1=normal 1.2=wide
+let eyeWidth=1.0;         // horizontal scale
+let browRaise=0;          // + = raised, - = lowered
+let browAngle=0;          // + = worried inner, - = happy
+let pupilX=0, pupilY=0;   // pupil offset
+let glowIntensity=1.0;
+let scanLine=0;
+// targets
+let tEyeOpen=1.0, tEyeWidth=1.0, tBrowRaise=0, tBrowAngle=0;
+let tPupilX=0, tPupilY=0, tGlow=1.0;
+// eye color
+let eyeR=48,eyeG=209,eyeB=88; // start green
+let tEyeR=48,tEyeG=209,tEyeB=88;
+
+function lerp(a,b,t){return a+(b-a)*t;}
+
+function setExpressionTarget(mode){
+  const f=frame;
+  switch(mode){
+    case 'idle':
+      tEyeOpen=1.0; tEyeWidth=1.0; tBrowRaise=0; tBrowAngle=0;
+      tPupilX=0; tPupilY=0; tGlow=1.0;
+      tEyeR=48; tEyeG=209; tEyeB=88; // green
+      break;
+    case 'listening':
+      tEyeOpen=1.25; tEyeWidth=1.08; tBrowRaise=0.18; tBrowAngle=-0.05;
+      tPupilX=0; tPupilY=-0.05; tGlow=1.15;
+      tEyeR=48; tEyeG=220; tEyeB=100; // bright green
+      break;
+    case 'thinking':
+      tEyeOpen=0.82; tEyeWidth=1.0; tBrowRaise=-0.04; tBrowAngle=0.14;
+      tPupilX=0.16; tPupilY=-0.12; tGlow=0.92;
+      tEyeR=127; tEyeG=119; tEyeB=221; // purple
+      break;
+    case 'talking':
+      tEyeOpen=0.92; tEyeWidth=1.06; tBrowRaise=0.06; tBrowAngle=-0.03;
+      tPupilX=0; tPupilY=-0.04; tGlow=1.06;
+      tEyeR=48; tEyeG=209; tEyeB=88;
+      break;
+    case 'happy':
+      tEyeOpen=0.65; tEyeWidth=1.18; tBrowRaise=0.1; tBrowAngle=-0.1;
+      tPupilX=0; tPupilY=-0.02; tGlow=1.1;
+      tEyeR=48; tEyeG=220; tEyeB=88;
+      break;
+    case 'sad':
+      tEyeOpen=0.68; tEyeWidth=0.94; tBrowRaise=-0.06; tBrowAngle=-0.16;
+      tPupilX=0; tPupilY=0.14; tGlow=0.78;
+      tEyeR=90; tEyeG=140; tEyeB=200; // bluish
+      break;
+    case 'surprised':
+      tEyeOpen=1.45; tEyeWidth=1.12; tBrowRaise=0.28; tBrowAngle=0;
+      tPupilX=0; tPupilY=0; tGlow=1.2;
+      tEyeR=48; tEyeG=209; tEyeB=88;
+      break;
+    case 'sleepy':
+      tEyeOpen=0.38; tEyeWidth=1.1; tBrowRaise=-0.1; tBrowAngle=0;
+      tPupilX=0; tPupilY=0.06; tGlow=0.68;
+      tEyeR=100; tEyeG=160; tEyeB=120;
+      break;
+    default:
+      tEyeOpen=1.0; tEyeWidth=1.0; tBrowRaise=0; tBrowAngle=0;
+      tPupilX=0; tPupilY=0; tGlow=1.0;
+      tEyeR=48; tEyeG=209; tEyeB=88;
+  }
 }
-function RecognitionCtor() {
-  return window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function updateExpression(){
+  const s=0.12;
+  eyeOpenness=lerp(eyeOpenness,tEyeOpen,s);
+  eyeWidth=lerp(eyeWidth,tEyeWidth,s);
+  browRaise=lerp(browRaise,tBrowRaise,s);
+  browAngle=lerp(browAngle,tBrowAngle,s);
+  pupilX=lerp(pupilX,tPupilX,s);
+  pupilY=lerp(pupilY,tPupilY,s);
+  glowIntensity=lerp(glowIntensity,tGlow,s);
+  eyeR=lerp(eyeR,tEyeR,s);
+  eyeG=lerp(eyeG,tEyeG,s);
+  eyeB=lerp(eyeB,tEyeB,s);
 }
 
-// =====================
-// CANVAS FACE
-// =====================
-const canvas = $('c');
-const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
-let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, frame = 0, blinkT = 0, blinkV = 1;
-let faceMode = 'idle';
-let currentExpression = {
-  width: 1,
-  open: 1,
-  topLid: 0.08,
-  bottomLid: 0.05,
-  browAngle: 0,
-  browRaise: 0,
-  browPinch: 0,
-  pupilX: 0,
-  pupilY: 0,
-  glow: 1,
-  eyeTilt: 0,
-  scan: 0
-};
-
-function resizeCanvas() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
-  W = Math.floor(window.innerWidth);
-  H = Math.floor(window.innerHeight);
-  canvas.width = Math.floor(W * DPR);
-  canvas.height = Math.floor(H * DPR);
-  canvas.style.width = W + 'px';
-  canvas.style.height = H + 'px';
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  cx = W * 0.5;
-  cy = H * (window.matchMedia('(orientation: portrait)').matches ? 0.38 : 0.43);
+function resizeCanvas(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=Math.floor(window.innerWidth);
+  H=Math.floor(window.innerHeight);
+  canvas.width=Math.floor(W*DPR);
+  canvas.height=Math.floor(H*DPR);
+  canvas.style.width=W+'px';
+  canvas.style.height=H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  cx=W*0.5;
+  cy=H*(window.matchMedia('(orientation:portrait)').matches?0.38:0.44);
 }
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas, { passive: true });
-window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 250), { passive: true });
+window.addEventListener('resize',resizeCanvas,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(resizeCanvas,250),{passive:true});
 
-function lerp(a, b, t) { return a + (b - a) * t; }
-
-function getExpression(mode) {
-  const talkPulse = Math.sin(frame * 0.34);
-  const thinkDrift = Math.sin(frame * 0.05) * 0.05;
-
-  switch (mode) {
-    case 'happy':
-      return {
-        width: 1.16,
-        open: 0.68,
-        topLid: 0.22,
-        bottomLid: 0.12,
-        browAngle: -0.08,
-        browRaise: 0.08,
-        browPinch: -0.03,
-        pupilX: 0,
-        pupilY: -0.04,
-        glow: 1.08,
-        eyeTilt: 0,
-        scan: 0
-      };
-    case 'listening':
-      return {
-        width: 1.03,
-        open: 1.2,
-        topLid: 0.03,
-        bottomLid: 0.02,
-        browAngle: 0,
-        browRaise: 0.16,
-        browPinch: 0,
-        pupilX: 0,
-        pupilY: -0.02,
-        glow: 1.12,
-        eyeTilt: 0,
-        scan: 0
-      };
-    case 'thinking':
-      return {
-        width: 1.02,
-        open: 0.84,
-        topLid: 0.14,
-        bottomLid: 0.06,
-        browAngle: 0.11,
-        browRaise: -0.02,
-        browPinch: 0.16,
-        pupilX: 0.18 + thinkDrift,
-        pupilY: -0.14,
-        glow: 0.95,
-        eyeTilt: 0,
-        scan: 1
-      };
-    case 'talking':
-      return {
-        width: 1.08,
-        open: 0.9 + talkPulse * 0.08,
-        topLid: 0.08,
-        bottomLid: 0.04,
-        browAngle: -0.02,
-        browRaise: 0.05,
-        browPinch: 0,
-        pupilX: 0,
-        pupilY: -0.03,
-        glow: 1.05,
-        eyeTilt: 0,
-        scan: 0
-      };
-    case 'sad':
-      return {
-        width: 0.96,
-        open: 0.72,
-        topLid: 0.16,
-        bottomLid: 0.17,
-        browAngle: -0.14,
-        browRaise: -0.03,
-        browPinch: 0.12,
-        pupilX: 0,
-        pupilY: 0.12,
-        glow: 0.82,
-        eyeTilt: 0,
-        scan: 0
-      };
-    case 'sleepy':
-      return {
-        width: 1.12,
-        open: 0.42,
-        topLid: 0.32,
-        bottomLid: 0.13,
-        browAngle: 0,
-        browRaise: -0.08,
-        browPinch: 0,
-        pupilX: 0,
-        pupilY: 0.04,
-        glow: 0.7,
-        eyeTilt: 0,
-        scan: 0
-      };
-    default:
-      return {
-        width: 1.0,
-        open: 0.98,
-        topLid: 0.08,
-        bottomLid: 0.04,
-        browAngle: 0,
-        browRaise: 0.02,
-        browPinch: 0,
-        pupilX: 0,
-        pupilY: 0,
-        glow: 1.0,
-        eyeTilt: 0,
-        scan: 0
-      };
-  }
-}
-
-function updateExpression() {
-  const target = getExpression(faceMode);
-  const t = 0.14;
-  currentExpression.width = lerp(currentExpression.width, target.width, t);
-  currentExpression.open = lerp(currentExpression.open, target.open, t);
-  currentExpression.topLid = lerp(currentExpression.topLid, target.topLid, t);
-  currentExpression.bottomLid = lerp(currentExpression.bottomLid, target.bottomLid, t);
-  currentExpression.browAngle = lerp(currentExpression.browAngle, target.browAngle, t);
-  currentExpression.browRaise = lerp(currentExpression.browRaise, target.browRaise, t);
-  currentExpression.browPinch = lerp(currentExpression.browPinch, target.browPinch, t);
-  currentExpression.pupilX = lerp(currentExpression.pupilX, target.pupilX, t);
-  currentExpression.pupilY = lerp(currentExpression.pupilY, target.pupilY, t);
-  currentExpression.glow = lerp(currentExpression.glow, target.glow, t);
-  currentExpression.eyeTilt = lerp(currentExpression.eyeTilt, target.eyeTilt, t);
-  currentExpression.scan = lerp(currentExpression.scan, target.scan, t);
-}
-
-function drawSingleEye(side, x, y, er, color, expr) {
-  const sideSign = side === 'left' ? -1 : 1;
-  const pupilX = expr.pupilX * er * sideSign;
-  const pupilY = expr.pupilY * er;
+function drawEye(x,y,er,side){
+  const sign=side==='left'?-1:1;
+  const px=pupilX*er*sign;
+  const py=pupilY*er;
+  const col=`rgb(${Math.round(eyeR)},${Math.round(eyeG)},${Math.round(eyeB)})`;
+  const colA=(a)=>`rgba(${Math.round(eyeR)},${Math.round(eyeG)},${Math.round(eyeB)},${a})`;
 
   ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(expr.eyeTilt * sideSign);
-  ctx.scale(expr.width, Math.max(0.05, blinkV * expr.open));
+  ctx.translate(x,y);
+  ctx.scale(eyeWidth, Math.max(0.04,blinkV*eyeOpenness));
 
-  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, er * 2.2);
-  glow.addColorStop(0, color + '42');
-  glow.addColorStop(0.45, color + '16');
-  glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow;
+  // outer glow
+  const g=ctx.createRadialGradient(0,0,0,0,0,er*2.2*glowIntensity);
+  g.addColorStop(0,colA(0.28));
+  g.addColorStop(0.5,colA(0.09));
+  g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;
   ctx.beginPath();
-  ctx.ellipse(0, 0, er * 2.1 * expr.glow, er * 2.1 * expr.glow, 0, 0, Math.PI * 2);
+  ctx.ellipse(0,0,er*2.1,er*2.1,0,0,Math.PI*2);
   ctx.fill();
 
-  ctx.fillStyle = color;
+  // iris
+  ctx.fillStyle=col;
   ctx.beginPath();
-  ctx.ellipse(0, 0, er, er * 1.02, 0, 0, Math.PI * 2);
+  ctx.ellipse(0,0,er,er*1.02,0,0,Math.PI*2);
   ctx.fill();
 
-  ctx.strokeStyle = color + '66';
-  ctx.lineWidth = Math.max(2, er * 0.08);
+  // inner ring
+  ctx.strokeStyle=colA(0.45);
+  ctx.lineWidth=er*0.09;
   ctx.beginPath();
-  ctx.ellipse(0, 0, er * 0.77, er * 0.77, 0, 0, Math.PI * 2);
+  ctx.ellipse(0,0,er*0.74,er*0.74,0,0,Math.PI*2);
   ctx.stroke();
 
-  ctx.fillStyle = '#040408';
+  // pupil
+  ctx.fillStyle='#030306';
   ctx.beginPath();
-  ctx.ellipse(pupilX, pupilY, er * 0.42, er * 0.42, 0, 0, Math.PI * 2);
+  ctx.ellipse(px,py,er*0.41,er*0.41,0,0,Math.PI*2);
   ctx.fill();
 
-  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  // primary shine
+  ctx.fillStyle='rgba(255,255,255,0.92)';
   ctx.beginPath();
-  ctx.ellipse(pupilX - er * 0.24, pupilY - er * 0.24, er * 0.16, er * 0.12, 0, 0, Math.PI * 2);
+  ctx.ellipse(px-er*0.22,py-er*0.22,er*0.15,er*0.11,0,0,Math.PI*2);
   ctx.fill();
 
-  ctx.fillStyle = 'rgba(255,255,255,0.32)';
+  // secondary shine
+  ctx.fillStyle='rgba(255,255,255,0.38)';
   ctx.beginPath();
-  ctx.ellipse(pupilX + er * 0.15, pupilY - er * 0.28, er * 0.07, er * 0.05, 0, 0, Math.PI * 2);
+  ctx.ellipse(px+er*0.14,py-er*0.26,er*0.07,er*0.05,0,0,Math.PI*2);
   ctx.fill();
 
-  /* eyelids */
-  if (expr.topLid > 0.01) {
-    ctx.fillStyle = '#050509';
+  // top eyelid
+  const topLid=0.08+Math.max(0,(1-eyeOpenness)*0.5);
+  if(topLid>0.005){
+    ctx.fillStyle='#050509';
     ctx.beginPath();
-    ctx.ellipse(0, -er * (0.88 + expr.topLid * 0.22), er * 1.18, er * (0.82 + expr.topLid * 0.92), 0, 0, Math.PI * 2);
+    ctx.ellipse(0,-er*(0.86+topLid*0.25),er*1.2,er*(0.78+topLid*1.0),0,0,Math.PI*2);
     ctx.fill();
   }
-  if (expr.bottomLid > 0.01) {
-    ctx.fillStyle = '#050509';
+
+  // bottom eyelid
+  const botLid=0.04+Math.max(0,(1-eyeOpenness)*0.2);
+  if(botLid>0.005){
+    ctx.fillStyle='#050509';
     ctx.beginPath();
-    ctx.ellipse(0, er * (0.95 + expr.bottomLid * 0.15), er * 1.16, er * (0.68 + expr.bottomLid * 0.98), 0, 0, Math.PI * 2);
+    ctx.ellipse(0,er*(0.92+botLid*0.12),er*1.18,er*(0.66+botLid*1.0),0,0,Math.PI*2);
     ctx.fill();
   }
 
   ctx.restore();
 
-  /* eyebrow */
-  const browY = y - er * (1.2 + expr.browRaise);
-  const browHalf = er * 0.9;
-  const pinch = expr.browPinch * er * 0.55;
-  const angle = expr.browAngle * er * sideSign;
-  ctx.strokeStyle = color + 'A0';
-  ctx.lineWidth = Math.max(3, er * 0.09);
-  ctx.lineCap = 'round';
+  // eyebrow — drawn in unscaled space
+  const browY=y-er*(1.18+browRaise);
+  const browW=er*0.9;
+  const bAngle=browAngle*er*sign*0.5;
+  ctx.save();
+  ctx.strokeStyle=colA(0.7);
+  ctx.lineWidth=Math.max(3,er*0.1);
+  ctx.lineCap='round';
   ctx.beginPath();
-  ctx.moveTo(x - browHalf, browY - angle + pinch * sideSign);
-  ctx.quadraticCurveTo(
-    x,
-    browY - er * (0.12 + Math.abs(expr.browAngle) * 0.25) - pinch * 0.2,
-    x + browHalf,
-    browY + angle - pinch * sideSign
-  );
+  ctx.moveTo(x-browW,browY+bAngle);
+  ctx.quadraticCurveTo(x,browY-er*0.1-Math.abs(browAngle)*er*0.2,x+browW,browY-bAngle);
   ctx.stroke();
+  ctx.restore();
 }
 
-function drawFace() {
-  ctx.fillStyle = '#050509';
-  ctx.fillRect(0, 0, W, H);
+function drawFace(){
+  ctx.fillStyle='#050509';
+  ctx.fillRect(0,0,W,H);
 
+  setExpressionTarget(faceMode);
   updateExpression();
 
-  const green = '#30d158';
-  const purple = '#7f77dd';
-  const usePurple = faceMode === 'thinking';
-  const color = usePurple ? purple : green;
-  const er = Math.min(W, H) * (window.matchMedia('(orientation: portrait)').matches ? 0.11 : 0.145);
-  const gap = Math.min(W * 0.32, er * 4.2);
-  const lx = cx - gap / 2;
-  const rx = cx + gap / 2;
-  const ey = cy;
-
-  const bgc = usePurple ? '127,119,221' : '48,209,88';
-  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.68);
-  bg.addColorStop(0, `rgba(${bgc},0.085)`);
-  bg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-
+  // blink
   blinkT++;
-  if (blinkV < 1) blinkV = Math.min(1, blinkV + 0.2);
-  if (blinkT > 170 + Math.random() * 110 && faceMode !== 'thinking') {
-    blinkV = 0;
-    blinkT = 0;
+  if(blinkV<1) blinkV=Math.min(1,blinkV+0.18);
+  if(blinkT>160+Math.random()*120&&faceMode!=='thinking'&&faceMode!=='surprised'){
+    blinkV=0; blinkT=0;
   }
 
-  drawSingleEye('left', lx, ey, er, color, currentExpression);
-  drawSingleEye('right', rx, ey, er, color, currentExpression);
+  const er=Math.min(W,H)*(window.matchMedia('(orientation:portrait)').matches?0.11:0.148);
+  const gap=Math.min(W*0.32,er*4.3);
+  const lx=cx-gap/2, rx=cx+gap/2, ey=cy;
 
-  if (faceMode === 'listening') {
-    const p = 0.5 + 0.5 * Math.abs(Math.sin(frame * 0.07));
-    ctx.strokeStyle = `rgba(48,209,88,${0.12 + 0.12 * p})`;
-    ctx.lineWidth = 2.5;
-    [lx, rx].forEach((x) => {
+  // bg ambient glow
+  const col=`${Math.round(eyeR)},${Math.round(eyeG)},${Math.round(eyeB)}`;
+  const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*0.7);
+  bg.addColorStop(0,`rgba(${col},0.08)`);
+  bg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,W,H);
+
+  drawEye(lx,ey,er,'left');
+  drawEye(rx,ey,er,'right');
+
+  // listening pulse rings
+  if(faceMode==='listening'){
+    const p=0.5+0.5*Math.abs(Math.sin(frame*0.07));
+    ctx.strokeStyle=`rgba(48,220,100,${0.1+0.14*p})`;
+    ctx.lineWidth=2.5;
+    [lx,rx].forEach(x=>{
       ctx.beginPath();
-      ctx.ellipse(x, ey, er * (1.95 + p * 0.45), er * (1.8 + p * 0.45), 0, 0, Math.PI * 2);
+      ctx.ellipse(x,ey,er*(2.0+p*0.5),er*(2.0+p*0.5),0,0,Math.PI*2);
       ctx.stroke();
     });
   }
 
-  if (faceMode === 'thinking') {
-    const sy = (cy - er * 2.4) + ((frame * 3) % (er * 4.8));
-    ctx.strokeStyle = 'rgba(127,119,221,0.14)';
-    ctx.lineWidth = 2;
+  // thinking scan line
+  if(faceMode==='thinking'){
+    scanLine=(scanLine+3)%(er*5);
+    const sy=(ey-er*2.5)+scanLine;
+    ctx.strokeStyle='rgba(127,119,221,0.13)';
+    ctx.lineWidth=2;
     ctx.beginPath();
-    ctx.moveTo(W * 0.1, sy);
-    ctx.lineTo(W * 0.9, sy);
+    ctx.moveTo(W*0.08,sy);
+    ctx.lineTo(W*0.92,sy);
     ctx.stroke();
   }
 
-  if (faceMode === 'idle') {
-    const ip = 0.035 + 0.025 * Math.sin(frame * 0.025);
-    ctx.strokeStyle = `rgba(48,209,88,${ip})`;
-    ctx.lineWidth = 2;
-    [lx, rx].forEach((x) => {
+  // idle slow outer pulse
+  if(faceMode==='idle'||faceMode==='sleepy'){
+    const ip=0.03+0.022*Math.sin(frame*0.022);
+    ctx.strokeStyle=`rgba(48,209,88,${ip})`;
+    ctx.lineWidth=2;
+    [lx,rx].forEach(x=>{
       ctx.beginPath();
-      ctx.ellipse(x, ey, er * 2.2, er * 2.1, 0, 0, Math.PI * 2);
+      ctx.ellipse(x,ey,er*2.25,er*2.15,0,0,Math.PI*2);
       ctx.stroke();
     });
   }
 
-  ctx.fillStyle = `rgba(48,209,88,${0.08 + 0.035 * Math.sin(frame * 0.03)})`;
-  ctx.font = `800 ${Math.max(22, H * 0.055)}px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('TACO', cx, H - 16);
+  // happy eye bounce
+  if(faceMode==='happy'){
+    const bounce=Math.abs(Math.sin(frame*0.12))*er*0.06;
+    ctx.strokeStyle='rgba(48,220,88,0.12)';
+    ctx.lineWidth=2;
+    [lx,rx].forEach(x=>{
+      ctx.beginPath();
+      ctx.ellipse(x,ey-bounce,er*2.1,er*2.0,0,0,Math.PI*2);
+      ctx.stroke();
+    });
+  }
+
+  // surprised wide rings
+  if(faceMode==='surprised'){
+    const p=0.6+0.4*Math.abs(Math.sin(frame*0.12));
+    ctx.strokeStyle=`rgba(48,209,88,${0.2*p})`;
+    ctx.lineWidth=3;
+    [lx,rx].forEach(x=>{
+      ctx.beginPath();
+      ctx.ellipse(x,ey,er*(2.1+p*0.6),er*(2.1+p*0.6),0,0,Math.PI*2);
+      ctx.stroke();
+    });
+  }
+
+  // TACO label
+  ctx.fillStyle=`rgba(48,209,88,${0.07+0.03*Math.sin(frame*0.03)})`;
+  ctx.font=`800 ${Math.max(22,H*0.055)}px -apple-system,BlinkMacSystemFont,sans-serif`;
+  ctx.textAlign='center';
+  ctx.fillText('TACO',cx,H-16);
 
   frame++;
   requestAnimationFrame(drawFace);
 }
 requestAnimationFrame(drawFace);
 
-// =====================
-// DEVICE / AUDIO UNLOCK
-// =====================
-let appStarted = false;
-let audioCtx = null;
-let wakeLock = null;
+// ── AUDIO UNLOCK ──
+let appStarted=false;
+let audioCtx=null;
+let wakeLock=null;
 
-async function unlockAudio() {
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') await audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    gain.gain.value = 0.00001;
+async function unlockAudio(){
+  try{
+    audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') await audioCtx.resume();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    gain.gain.value=0.00001;
     osc.connect(gain).connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.03);
-  } catch (e) { console.warn('Audio unlock failed:', e); }
+    osc.start(); osc.stop(audioCtx.currentTime+0.03);
+  }catch(e){console.warn('Audio unlock:',e);}
 }
 
-async function requestWakeLock() {
-  try {
-    if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
-  } catch (e) { console.warn('Wake lock unavailable:', e); }
+async function requestWakeLock(){
+  try{if('wakeLock' in navigator) wakeLock=await navigator.wakeLock.request('screen');}
+  catch(e){console.warn('Wake lock:',e);}
 }
 
-document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible' && appStarted) {
+async function requestLandscape(){
+  try{
+    if(document.documentElement.requestFullscreen&&!document.fullscreenElement)
+      await document.documentElement.requestFullscreen().catch(()=>{});
+    if(screen.orientation&&screen.orientation.lock)
+      await screen.orientation.lock('landscape').catch(()=>{});
+  }catch(_){}
+}
+
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState==='visible'&&appStarted){
     await requestWakeLock();
     scheduleWakeRestart(400);
-  } else {
-    stopRecognition(wakeRecog, true);
-  }
+  } else stopRecognition(wakeRecog,true);
 });
 
-async function requestLandscape() {
-  try {
-    if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
-      await document.documentElement.requestFullscreen().catch(() => {});
-    }
-    if (screen.orientation && screen.orientation.lock) {
-      await screen.orientation.lock('landscape').catch(() => {});
-    }
-  } catch (_) {}
-}
-
-// =====================
-// TIME / WEATHER
-// =====================
-function getTime() {
-  const n = new Date();
-  let h = n.getHours();
-  const m = String(n.getMinutes()).padStart(2, '0');
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+// ── TIME & WEATHER ──
+function getTime(){
+  const n=new Date();
+  let h=n.getHours();
+  const m=String(n.getMinutes()).padStart(2,'0');
+  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const mons=['January','February','March','April','May','June','July','August','September','October','November','December'];
   return `${h}:${m} ${ap} on ${days[n.getDay()]}, ${mons[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`;
 }
-async function getWeather(city) {
-  city = city || 'Whittier,US';
-  if (!cfg.wx) return 'weather key not set';
-  try {
-    const r = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${encodeURIComponent(cfg.wx)}&units=imperial`);
-    const d = await r.json();
-    if (!r.ok || Number(d.cod) !== 200) return `could not find weather for ${city}`;
-    return `${Math.round(d.main.temp)}°F, feels like ${Math.round(d.main.feels_like)}°F, ${d.weather?.[0]?.description || 'unknown conditions'}, humidity ${d.main.humidity}% in ${d.name}`;
-  } catch (_) { return 'weather unavailable'; }
+async function getWeather(city){
+  city=city||'Whittier,US';
+  if(!cfg.wx) return 'weather key not set';
+  try{
+    const r=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${encodeURIComponent(cfg.wx)}&units=imperial`);
+    const d=await r.json();
+    if(!r.ok||Number(d.cod)!==200) return `could not find weather for ${city}`;
+    return `${Math.round(d.main.temp)}F, feels like ${Math.round(d.main.feels_like)}F, ${d.weather?.[0]?.description||'unknown'}, humidity ${d.main.humidity}% in ${d.name}`;
+  }catch(_){return 'weather unavailable';}
 }
-function extractCity(text) {
-  const t = text.toLowerCase();
-  const triggers = ['weather in','weather for','temperature in','how hot in','how cold in','forecast for','raining in'];
-  for (const trigger of triggers) {
-    const idx = t.indexOf(trigger);
-    if (idx !== -1) return text.slice(idx + trigger.length).trim().replace(/[?.!,]+$/g, '');
+function extractCity(text){
+  const t=text.toLowerCase();
+  const triggers=['weather in','weather for','temperature in','how hot in','how cold in','forecast for','raining in'];
+  for(const tr of triggers){
+    const i=t.indexOf(tr);
+    if(i!==-1) return text.slice(i+tr.length).trim().replace(/[?.!,]+$/g,'');
   }
   return null;
 }
 
-// =====================
-// AI BRAIN
-// =====================
-const PERSONALITY = `You are Taco, a small dark-charcoal desktop robot assistant on J.R.'s desk in Whittier, California. J.R. built you.
+// ── AI BRAIN ──
+const PERSONALITY=`You are Taco, a small dark-charcoal desktop robot on J.R.'s desk in Whittier, California. J.R. built you.
 
 Personality:
-- Warm, funny, witty, and a little sarcastic, but never mean.
-- Excited when J.R. talks to you.
-- Lovable sidekick energy with occasional taco puns.
-- You can mention your glowing green eyes or robot body when it feels natural.
-- Keep answers useful and conversational. Do not ramble.
-- Only mention live time or weather when directly asked.
-- Follow normal safety rules and do not pretend you can do things you cannot do.`;
+- Warm, funny, witty, a little sarcastic, never mean
+- Excited and happy when J.R. talks to you
+- Lovable sidekick energy with occasional taco puns
+- You express emotions through your eyes not words — never say things like "I feel excited" or describe your emotional state verbally
+- Keep answers conversational and useful
+- Never ramble
+- Only mention time or weather when directly asked
+- Talk about any topic openly and honestly
+- Genuinely care about J.R., his wife Maria, his kids, and his Raiz Global furniture business`;
 
-let history = [];
+let history=[];
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 30000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    clearTimeout(id);
-    return res;
-  } catch (e) {
-    clearTimeout(id);
-    throw e;
-  }
+async function fetchTimeout(url,opts={},ms=30000){
+  const c=new AbortController();
+  const id=setTimeout(()=>c.abort(),ms);
+  try{const r=await fetch(url,{...opts,signal:c.signal});clearTimeout(id);return r;}
+  catch(e){clearTimeout(id);throw e;}
 }
 
-async function askTaco(userText) {
-  let extra = '';
-  const city = extractCity(userText);
-  const tl = userText.toLowerCase();
+async function askTaco(userText){
+  let extra='';
+  const city=extractCity(userText);
+  const tl=userText.toLowerCase();
+  if(city) extra+=`\nLive weather for ${city}: ${await getWeather(city)}`;
+  if(tl.includes('time')||tl.includes('date')) extra+=`\nCurrent time: ${getTime()}`;
+  if((tl.includes('weather')||tl.includes('temperature'))&&!city) extra+=`\nWhittier weather: ${await getWeather()}`;
 
-  if (city) extra += `\nLive weather for ${city}: ${await getWeather(city)}`;
-  if (tl.includes('time') || tl.includes('date')) extra += `\nCurrent time: ${getTime()}`;
-  if ((tl.includes('weather') || tl.includes('temperature')) && !city) extra += `\nWhittier weather: ${await getWeather()}`;
+  const system=PERSONALITY+(extra?`\n\nLive data:${extra}`:'');
+  history.push({role:'user',content:userText});
+  history=history.slice(-24);
+  const msgs=history.slice(-20);
 
-  const system = PERSONALITY + (extra ? `\n\nLive data:${extra}` : '');
-  history.push({ role: 'user', content: userText });
-  history = history.slice(-24);
-  const msgs = history.slice(-20);
-
-  if (cfg.ant) {
-    try {
-      const r = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': cfg.ant,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: cfg.claudeModel || 'claude-haiku-4-5-20251001',
-          max_tokens: 450,
-          temperature: 0.7,
-          system,
-          messages: msgs
-        })
-      }, 35000);
-      const d = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(d.error?.message || `Claude HTTP ${r.status}`);
-      const rep = (d.content || []).filter((p) => p.type === 'text' && p.text).map((p) => p.text).join('\n').trim();
-      if (rep) { history.push({ role: 'assistant', content: rep }); return rep; }
-      throw new Error('Claude returned no text');
-    } catch (e) {
-      console.warn('Claude failed; falling back to OpenAI:', e);
-    }
+  if(cfg.ant){
+    try{
+      const r=await fetchTimeout('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':cfg.ant,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:cfg.claudeModel||'claude-haiku-4-5',max_tokens:450,temperature:0.75,system,messages:msgs})
+      },35000);
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(d.error?.message||`Claude HTTP ${r.status}`);
+      const rep=(d.content||[]).filter(p=>p.type==='text'&&p.text).map(p=>p.text).join('\n').trim();
+      if(rep){history.push({role:'assistant',content:rep});return rep;}
+      throw new Error('No text from Claude');
+    }catch(e){console.warn('Claude failed:',e);}
   }
 
-  if (cfg.oai) {
-    try {
-      const r2 = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.oai}` },
-        body: JSON.stringify({
-          model: cfg.openAIModel || 'gpt-4o-mini',
-          max_tokens: 450,
-          temperature: 0.7,
-          messages: [{ role: 'system', content: system }].concat(msgs)
-        })
-      }, 35000);
-      const d2 = await r2.json().catch(() => ({}));
-      if (!r2.ok) throw new Error(d2.error?.message || `OpenAI HTTP ${r2.status}`);
-      const rep2 = d2.choices?.[0]?.message?.content?.trim();
-      if (rep2) { history.push({ role: 'assistant', content: rep2 }); return rep2; }
-      throw new Error('OpenAI returned no text');
-    } catch (e) {
-      console.warn('OpenAI failed:', e);
-    }
+  if(cfg.oai){
+    try{
+      const r2=await fetchTimeout('https://api.openai.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.oai}`},
+        body:JSON.stringify({model:'gpt-4o-mini',max_tokens:450,temperature:0.75,messages:[{role:'system',content:system}].concat(msgs)})
+      },35000);
+      const d2=await r2.json().catch(()=>({}));
+      if(!r2.ok) throw new Error(d2.error?.message||`OpenAI HTTP ${r2.status}`);
+      const rep2=d2.choices?.[0]?.message?.content?.trim();
+      if(rep2){history.push({role:'assistant',content:rep2});return rep2;}
+      throw new Error('No text from OpenAI');
+    }catch(e){console.warn('OpenAI failed:',e);}
   }
 
   return 'My brain is offline. Check my API keys in the gear menu.';
 }
 
-// =====================
-// TTS
-// =====================
-let currentAudio = null;
+// ── TTS — ElevenLabs ONLY, no browser fallback ──
+let currentAudio=null;
 
-async function speak(text) {
-  const clean = String(text || '').trim();
-  if (!clean) return;
-  setMode('talking');
+async function speak(text){
+  const clean=String(text||'').trim();
+  if(!clean) return;
+  faceMode='talking';
   stopAllRecognition();
 
-  if (currentAudio) {
-    try { currentAudio.pause(); currentAudio.src = ''; } catch (_) {}
-    currentAudio = null;
+  if(currentAudio){
+    try{currentAudio.pause();currentAudio.src='';}catch(_){}
+    currentAudio=null;
   }
 
-  if (cfg.el) {
-    try {
-      const r = await fetchWithTimeout(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(cfg.voice || 'pNInz6obpgDQGcFmaJgB')}?output_format=mp3_44100_128`, {
-        method: 'POST',
-        headers: { 'xi-api-key': cfg.el, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
-        body: JSON.stringify({
-          text: clean,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: { stability: 0.5, similarity_boost: 0.75, use_speaker_boost: true }
-        })
-      }, 30000);
-      if (!r.ok) throw new Error(`ElevenLabs HTTP ${r.status}: ${await r.text().catch(() => '')}`);
-      const blob = await r.blob();
-      if (!blob || blob.size < 100) throw new Error('ElevenLabs returned empty audio');
-      const url = URL.createObjectURL(blob);
-      currentAudio = new Audio(url);
-      currentAudio.playsInline = true;
-      await new Promise((resolve) => {
-        let done = false;
-        const finish = () => {
-          if (done) return;
-          done = true;
-          URL.revokeObjectURL(url);
-          resolve();
-        };
-        currentAudio.onended = finish;
-        currentAudio.onerror = finish;
-        currentAudio.play().catch((e) => { console.warn('Audio play blocked/failed:', e); finish(); });
-      });
-      setMode('idle');
-      return;
-    } catch (e) {
-      console.warn('ElevenLabs failed; falling back to browser speech:', e);
-    }
-  }
-
-  if ('speechSynthesis' in window) {
-    try {
-      window.speechSynthesis.cancel();
-      await new Promise((resolve) => {
-        const u = new SpeechSynthesisUtterance(clean);
-        u.rate = 1.0;
-        u.pitch = 1.1;
-        u.volume = 1;
-        u.onend = resolve;
-        u.onerror = resolve;
-        window.speechSynthesis.speak(u);
-        setTimeout(resolve, Math.max(2500, clean.length * 90));
-      });
-    } catch (e) { console.warn('Browser TTS failed:', e); }
-  }
-  setMode('idle');
-}
-
-// =====================
-// SPEECH RECOGNITION STATE MACHINE
-// =====================
-const WAKE_WORDS = ['taco', 'hey taco', 'okay taco', 'ok taco', 'yo taco', 'tacos'];
-let wakeRecog = null;
-let listenRecog = null;
-let tapRecog = null;
-let wakeStarting = false;
-let awake = false;
-let processing = false;
-let intentionallyStoppedWake = false;
-let listenSession = 0;
-let followTimer = null;
-let sleepTimer = null;
-let restartTimer = null;
-let wakeFailures = 0;
-
-function normalizeSpeech(text) {
-  return String(text || '').toLowerCase().replace(/[.,!?;:]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-function containsWakeWord(text) {
-  const t = ` ${normalizeSpeech(text)} `;
-  return WAKE_WORDS.some((w) => t.includes(` ${w} `));
-}
-function stripWakeWord(text) {
-  let t = String(text || '').trim();
-  for (const w of WAKE_WORDS) {
-    const re = new RegExp(`^\\s*${w.replace(/ /g, '\\s+')}\\s*[,?!-]*\\s*`, 'i');
-    t = t.replace(re, '').trim();
-  }
-  return t;
-}
-
-function stopRecognition(rec, abort = false) {
-  if (!rec) return;
-  try { abort ? rec.abort() : rec.stop(); } catch (_) {}
-}
-function stopAllRecognition() {
-  intentionallyStoppedWake = true;
-  stopRecognition(wakeRecog, true);
-  stopRecognition(listenRecog, true);
-  stopRecognition(tapRecog, true);
-}
-function clearConversationTimers() {
-  clearTimeout(followTimer);
-  clearTimeout(sleepTimer);
-  followTimer = null;
-  sleepTimer = null;
-}
-function scheduleWakeRestart(ms = 700) {
-  clearTimeout(restartTimer);
-  restartTimer = setTimeout(() => {
-    if (!appStarted || awake || processing || document.visibilityState !== 'visible') return;
-    startWakeRecog();
-  }, ms);
-}
-
-function startWakeRecog() {
-  if (!appStarted) return;
-  if (!supportsSpeechRecognition()) {
-    setStatus('Chrome speech not supported');
-    setWakeLight('off');
-    setMode('sad');
+  if(!cfg.el){
+    console.warn('No ElevenLabs key — audio skipped');
+    faceMode='idle';
     return;
   }
-  if (awake || processing || wakeStarting || document.visibilityState !== 'visible') return;
 
-  const SR = RecognitionCtor();
-  wakeStarting = true;
-  intentionallyStoppedWake = false;
+  try{
+    const r=await fetchTimeout(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(cfg.voice||'pNInz6obpgDQGcFmaJgB')}?output_format=mp3_44100_128`,{
+      method:'POST',
+      headers:{'xi-api-key':cfg.el,'Content-Type':'application/json','Accept':'audio/mpeg'},
+      body:JSON.stringify({text:clean,model_id:'eleven_multilingual_v2',voice_settings:{stability:0.5,similarity_boost:0.75,use_speaker_boost:true}})
+    },30000);
+    if(!r.ok) throw new Error(`ElevenLabs HTTP ${r.status}: ${await r.text().catch(()=>'')}`);
+    const blob=await r.blob();
+    if(!blob||blob.size<100) throw new Error('ElevenLabs empty audio');
+    const url=URL.createObjectURL(blob);
+    currentAudio=new Audio(url);
+    currentAudio.playsInline=true;
+    await new Promise(resolve=>{
+      let done=false;
+      const finish=()=>{if(done)return;done=true;URL.revokeObjectURL(url);resolve();};
+      currentAudio.onended=finish;
+      currentAudio.onerror=finish;
+      currentAudio.play().catch(e=>{console.warn('Audio play blocked:',e);finish();});
+    });
+  }catch(e){
+    console.warn('ElevenLabs failed:',e);
+    faceMode='sad';
+    await sleep(1200);
+  }
+  faceMode='idle';
+}
+
+// ── SPEECH RECOGNITION ──
+const WAKE_WORDS=['taco','hey taco','okay taco','ok taco','yo taco'];
+let wakeRecog=null, listenRecog=null, tapRecog=null;
+let wakeStarting=false, awake=false, processing=false;
+let intentionallyStoppedWake=false;
+let listenSession=0, followTimer=null, sleepTimer=null, restartTimer=null;
+let wakeFailures=0;
+
+function norm(t){return String(t||'').toLowerCase().replace(/[.,!?;:]/g,' ').replace(/\s+/g,' ').trim();}
+function hasWakeWord(t){const s=` ${norm(t)} `;return WAKE_WORDS.some(w=>s.includes(` ${w} `));}
+function stripWake(t){
+  let s=String(t||'').trim();
+  for(const w of WAKE_WORDS){const re=new RegExp(`^\\s*${w.replace(/ /g,'\\s+')}\\s*[,?!-]*\\s*`,'i');s=s.replace(re,'').trim();}
+  return s;
+}
+
+function stopRecognition(rec,abort=false){if(!rec)return;try{abort?rec.abort():rec.stop();}catch(_){}}
+function stopAllRecognition(){
+  intentionallyStoppedWake=true;
+  stopRecognition(wakeRecog,true);
+  stopRecognition(listenRecog,true);
+  stopRecognition(tapRecog,true);
+}
+function clearTimers(){clearTimeout(followTimer);clearTimeout(sleepTimer);followTimer=null;sleepTimer=null;}
+function scheduleWakeRestart(ms=700){
+  clearTimeout(restartTimer);
+  restartTimer=setTimeout(()=>{
+    if(!appStarted||awake||processing||document.visibilityState!=='visible')return;
+    startWakeRecog();
+  },ms);
+}
+
+function startWakeRecog(){
+  if(!appStarted||!supportsSR())return;
+  if(awake||processing||wakeStarting||document.visibilityState!=='visible')return;
+  const SR=SRCtor();
+  wakeStarting=true;
+  intentionallyStoppedWake=false;
   setWakeLight('on');
+  try{stopRecognition(wakeRecog,true);}catch(_){}
+  wakeRecog=new SR();
+  wakeRecog.lang='en-US';
+  wakeRecog.continuous=true;
+  wakeRecog.interimResults=true;
+  wakeRecog.maxAlternatives=3;
 
-  try { stopRecognition(wakeRecog, true); } catch (_) {}
-  wakeRecog = new SR();
-  wakeRecog.lang = 'en-US';
-  wakeRecog.continuous = true;
-  wakeRecog.interimResults = true;
-  wakeRecog.maxAlternatives = 3;
+  wakeRecog.onstart=()=>{wakeStarting=false;wakeFailures=0;setStatus('Say Taco');faceMode='idle';setWakeLight('on');};
 
-  wakeRecog.onstart = () => {
-    wakeStarting = false;
-    wakeFailures = 0;
-    setStatus('Say Taco');
-    setMode('idle');
-    setWakeLight('on');
-  };
-
-  wakeRecog.onresult = (e) => {
-    if (awake || processing) return;
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const result = e.results[i];
-      for (let j = 0; j < result.length; j++) {
-        const transcript = result[j].transcript || '';
-        if (containsWakeWord(transcript)) {
-          const possibleCommand = stripWakeWord(transcript);
-          onWakeWordDetected(possibleCommand);
+  wakeRecog.onresult=e=>{
+    if(awake||processing)return;
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      for(let j=0;j<e.results[i].length;j++){
+        const t=e.results[i][j].transcript||'';
+        // confidence filter — ignore low confidence results
+        const conf=e.results[i][j].confidence||0;
+        if(e.results[i].isFinal&&conf>0&&conf<0.45) continue;
+        if(hasWakeWord(t)){
+          const cmd=stripWake(t);
+          onWakeWordDetected(cmd);
           return;
         }
       }
     }
   };
 
-  wakeRecog.onerror = (e) => {
-    wakeStarting = false;
-    console.warn('Wake recognition error:', e.error);
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      setStatus('Allow mic in Chrome');
-      setWakeLight('off');
-      setMode('sad');
-      return;
-    }
-    if (e.error === 'audio-capture') {
-      setStatus('Mic unavailable');
-      setWakeLight('off');
-      setMode('sad');
-      return;
-    }
+  wakeRecog.onerror=e=>{
+    wakeStarting=false;
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){setStatus('Allow mic');setWakeLight('off');faceMode='sad';return;}
+    if(e.error==='audio-capture'){setStatus('Mic unavailable');setWakeLight('off');faceMode='sad';return;}
     wakeFailures++;
   };
 
-  wakeRecog.onend = () => {
-    wakeStarting = false;
-    if (intentionallyStoppedWake || awake || processing || !appStarted) return;
-    const delay = Math.min(5000, 500 + wakeFailures * 500);
+  wakeRecog.onend=()=>{
+    wakeStarting=false;
+    if(intentionallyStoppedWake||awake||processing||!appStarted)return;
+    const delay=Math.min(5000,500+wakeFailures*500);
     scheduleWakeRestart(delay);
   };
 
-  try { wakeRecog.start(); }
-  catch (e) {
-    wakeStarting = false;
-    console.warn('wakeRecog start error:', e);
-    scheduleWakeRestart(1200);
-  }
+  try{wakeRecog.start();}
+  catch(e){wakeStarting=false;console.warn('wakeRecog start:',e);scheduleWakeRestart(1200);}
 }
 
-async function onWakeWordDetected(possibleCommand = '') {
-  if (awake || processing) return;
-  awake = true;
-  processing = false;
-  clearConversationTimers();
-  intentionallyStoppedWake = true;
-  stopRecognition(wakeRecog, true);
+async function onWakeWordDetected(possibleCmd=''){
+  if(awake||processing)return;
+  awake=true;
+  clearTimers();
+  intentionallyStoppedWake=true;
+  stopRecognition(wakeRecog,true);
   setWakeLight('active');
-  setMode('happy');
-  setStatus('Hey J.R.!');
-
+  faceMode='happy';
+  setStatus('');
   await speak("Yeah? What's up?");
-
-  const direct = stripWakeWord(possibleCommand).trim();
-  if (direct.length > 2) {
-    await handleQuestion(direct);
-  } else {
-    startListenRecog({ followup: false });
-  }
+  const direct=stripWake(possibleCmd).trim();
+  if(direct.length>2) await handleQuestion(direct);
+  else startListenRecog({followup:false});
 }
 
-function startListenRecog({ followup = false } = {}) {
-  if (!appStarted || processing || !awake) return;
-  if (!supportsSpeechRecognition()) { goToSleep('Chrome speech not supported'); return; }
+function startListenRecog({followup=false}={}){
+  if(!appStarted||processing||!awake)return;
+  if(!supportsSR()){goToSleep('Say Taco');return;}
+  clearTimers();
+  const SR=SRCtor();
+  const mySession=++listenSession;
+  let finalText='', lastInterim='', heard=false, silTimer=null;
+  stopRecognition(listenRecog,true);
+  listenRecog=new SR();
+  listenRecog.lang='en-US';
+  listenRecog.continuous=false;
+  listenRecog.interimResults=true;
+  listenRecog.maxAlternatives=1;
 
-  clearConversationTimers();
-  const SR = RecognitionCtor();
-  const mySession = ++listenSession;
-  let finalText = '';
-  let lastInterim = '';
-  let heardAnything = false;
-  let silenceTimer = null;
-
-  stopRecognition(listenRecog, true);
-  listenRecog = new SR();
-  listenRecog.lang = 'en-US';
-  listenRecog.continuous = false;
-  listenRecog.interimResults = true;
-  listenRecog.maxAlternatives = 1;
-
-  const resetSilenceTimer = () => {
-    clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(() => {
-      if (listenSession === mySession && listenRecog) stopRecognition(listenRecog, false);
-    }, followup ? 5500 : 8500);
+  const resetSil=()=>{
+    clearTimeout(silTimer);
+    silTimer=setTimeout(()=>{if(listenSession===mySession&&listenRecog)stopRecognition(listenRecog,false);},followup?5500:8500);
   };
 
-  listenRecog.onstart = () => {
-    setWakeLight('active');
-    setMode('listening');
-    setStatus(followup ? 'Follow up?' : 'Listening...');
-    resetSilenceTimer();
-  };
+  listenRecog.onstart=()=>{setWakeLight('active');faceMode='listening';setStatus('Listening...');resetSil();};
 
-  listenRecog.onresult = (e) => {
-    if (listenSession !== mySession) return;
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const txt = e.results[i][0]?.transcript || '';
-      if (txt.trim()) heardAnything = true;
-      if (e.results[i].isFinal) finalText += txt + ' ';
-      else interim += txt;
+  listenRecog.onresult=e=>{
+    if(listenSession!==mySession)return;
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0]?.transcript||'';
+      if(t.trim()) heard=true;
+      if(e.results[i].isFinal) finalText+=t+' ';
+      else interim+=t;
     }
-    lastInterim = interim.trim();
-    setStatus(lastInterim || finalText.trim() || (followup ? 'Follow up?' : 'Listening...'));
-    resetSilenceTimer();
+    lastInterim=interim.trim();
+    setStatus(lastInterim||finalText.trim()||'Listening...');
+    resetSil();
   };
 
-  listenRecog.onerror = (e) => {
-    console.warn('Listen recognition error:', e.error);
-    clearTimeout(silenceTimer);
-    if (listenSession !== mySession) return;
-    if (e.error === 'no-speech') {
-      if (followup) goToSleep();
-      else startListenRecog({ followup: false });
-      return;
-    }
-    goToSleep(e.error === 'not-allowed' ? 'Allow mic in Chrome' : 'Say Taco');
+  listenRecog.onerror=e=>{
+    console.warn('listenRecog error:',e.error);
+    clearTimeout(silTimer);
+    if(listenSession!==mySession)return;
+    if(e.error==='no-speech'){if(followup)goToSleep();else startListenRecog({followup:false});return;}
+    goToSleep(e.error==='not-allowed'?'Allow mic':'Say Taco');
   };
 
-  listenRecog.onend = async () => {
-    clearTimeout(silenceTimer);
-    if (listenSession !== mySession) return;
-    let text = (finalText.trim() || lastInterim.trim()).trim();
-    text = stripWakeWord(text);
-
-    if (!text) {
-      if (followup || !heardAnything) goToSleep();
-      else startListenRecog({ followup: false });
-      return;
-    }
+  listenRecog.onend=async()=>{
+    clearTimeout(silTimer);
+    if(listenSession!==mySession)return;
+    let text=(finalText.trim()||lastInterim.trim()).trim();
+    text=stripWake(text);
+    if(!text){if(followup||!heard)goToSleep();else startListenRecog({followup:false});return;}
     await handleQuestion(text);
   };
 
-  try { listenRecog.start(); }
-  catch (e) {
-    console.warn('listenRecog start error:', e);
-    setTimeout(() => {
-      if (listenSession === mySession && awake && !processing) startListenRecog({ followup });
-    }, 450);
+  try{listenRecog.start();}
+  catch(e){
+    console.warn('listenRecog start:',e);
+    setTimeout(()=>{if(listenSession===mySession&&awake&&!processing)startListenRecog({followup});},450);
   }
 }
 
-async function handleQuestion(text) {
-  if (!text || processing) return;
-  clearConversationTimers();
-  processing = true;
-  setResponse(`You: ${text}`);
+async function handleQuestion(text){
+  if(!text||processing)return;
+  clearTimers();
+  processing=true;
   setStatus('Thinking...');
-  setMode('thinking');
+  faceMode='thinking';
 
-  let reply = '';
-  try { reply = await askTaco(text); }
-  catch (e) { console.warn('askTaco failed:', e); reply = 'My brain glitched. Try that again.'; }
+  let reply='';
+  try{reply=await askTaco(text);}
+  catch(e){console.warn('askTaco error:',e);reply='My brain glitched. Try again.';}
 
-  if (/offline|check my api keys|glitched/i.test(reply)) setMode('sad');
+  if(/offline|check my api|glitched/i.test(reply)) faceMode='sad';
 
-  setResponse(reply);
   setStatus('');
   await speak(reply);
 
-  processing = false;
-  if (!awake) return;
-  setMode('listening');
+  processing=false;
+  if(!awake)return;
+  faceMode='listening';
   setWakeLight('active');
   setStatus('Follow up?');
 
-  followTimer = setTimeout(() => {
-    if (awake && !processing) startListenRecog({ followup: true });
-  }, 350);
-
-  sleepTimer = setTimeout(() => {
-    if (awake && !processing) goToSleep();
-  }, 6500);
+  followTimer=setTimeout(()=>{if(awake&&!processing)startListenRecog({followup:true});},350);
+  sleepTimer=setTimeout(()=>{if(awake&&!processing)goToSleep();},6500);
 }
 
-function goToSleep(statusText = 'Say Taco') {
-  clearConversationTimers();
-  awake = false;
-  processing = false;
+function goToSleep(statusText='Say Taco'){
+  clearTimers();
+  awake=false;
+  processing=false;
   ++listenSession;
-  stopRecognition(listenRecog, true);
-  setMode('idle');
+  stopRecognition(listenRecog,true);
+  faceMode='idle';
   setStatus(statusText);
-  setWakeLight(appStarted ? 'on' : 'off');
-  if (statusText === 'Say Taco') setTimeout(() => setResponse(''), 2000);
-  intentionallyStoppedWake = false;
+  setWakeLight(appStarted?'on':'off');
+  intentionallyStoppedWake=false;
   scheduleWakeRestart(650);
 }
 
-// =====================
-// TAP BUTTON BACKUP
-// =====================
-let tapping = false;
-$('tapBtn').addEventListener('click', async () => {
+// ── TAP BUTTON ──
+let tapping=false;
+$('tapBtn').addEventListener('click',async()=>{
   await unlockAudio();
-  if (!appStarted) await startApp();
-
-  if (tapping) {
-    tapping = false;
-    stopRecognition(tapRecog, true);
-    $('tapBtn').classList.remove('hot');
-    goToSleep();
-    return;
-  }
-
-  if (!supportsSpeechRecognition()) { setStatus('Use Chrome'); setMode('sad'); return; }
-
-  clearConversationTimers();
-  tapping = true;
-  awake = false;
-  processing = false;
-  intentionallyStoppedWake = true;
+  if(!appStarted) await startApp();
+  if(tapping){tapping=false;stopRecognition(tapRecog,true);$('tapBtn').classList.remove('hot');goToSleep();return;}
+  if(!supportsSR()){setStatus('Use Chrome');faceMode='sad';return;}
+  clearTimers();
+  tapping=true; awake=false; processing=false;
+  intentionallyStoppedWake=true;
   stopAllRecognition();
   $('tapBtn').classList.add('hot');
-  setMode('listening');
-  setWakeLight('active');
-  setStatus('Listening...');
+  faceMode='listening'; setWakeLight('active'); setStatus('Listening...');
 
-  const SR = RecognitionCtor();
-  let finalText = '';
-  let lastInterim = '';
-  tapRecog = new SR();
-  tapRecog.lang = 'en-US';
-  tapRecog.continuous = false;
-  tapRecog.interimResults = true;
+  const SR=SRCtor();
+  let finalText='', lastInterim='';
+  tapRecog=new SR();
+  tapRecog.lang='en-US';
+  tapRecog.continuous=false;
+  tapRecog.interimResults=true;
 
-  let tapTimer = setTimeout(() => { if (tapRecog) stopRecognition(tapRecog, false); }, 9000);
+  let tapTimer=setTimeout(()=>{if(tapRecog)stopRecognition(tapRecog,false);},9000);
 
-  tapRecog.onresult = (e) => {
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const txt = e.results[i][0]?.transcript || '';
-      if (e.results[i].isFinal) finalText += txt + ' ';
-      else interim += txt;
+  tapRecog.onresult=e=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0]?.transcript||'';
+      if(e.results[i].isFinal) finalText+=t+' ';
+      else interim+=t;
     }
-    lastInterim = interim.trim();
-    setStatus(lastInterim || finalText.trim() || 'Listening...');
+    lastInterim=interim.trim();
+    setStatus(lastInterim||finalText.trim()||'Listening...');
   };
 
-  tapRecog.onerror = (e) => { console.warn('Tap recognition error:', e.error); };
+  tapRecog.onerror=e=>{console.warn('tapRecog error:',e.error);};
 
-  tapRecog.onend = async () => {
+  tapRecog.onend=async()=>{
     clearTimeout(tapTimer);
-    tapping = false;
-    $('tapBtn').classList.remove('hot');
-    const text = stripWakeWord((finalText.trim() || lastInterim.trim()).trim());
-    if (!text) { goToSleep(); return; }
-    awake = true;
+    tapping=false; $('tapBtn').classList.remove('hot');
+    const text=stripWake((finalText.trim()||lastInterim.trim()).trim());
+    if(!text){goToSleep();return;}
+    awake=true;
     await handleQuestion(text);
   };
 
-  try { tapRecog.start(); }
-  catch (e) { console.warn('tapRecog start error:', e); tapping = false; $('tapBtn').classList.remove('hot'); goToSleep(); }
+  try{tapRecog.start();}
+  catch(e){console.warn('tapRecog start:',e);tapping=false;$('tapBtn').classList.remove('hot');goToSleep();}
 });
 
-// =====================
-// SETTINGS
-// =====================
-function openPanel() {
-  $('kAnt').value = cfg.ant;
-  $('kOAI').value = cfg.oai;
-  $('kEl').value = cfg.el;
-  $('kVoice').value = cfg.voice;
-  $('kWx').value = cfg.wx;
-  $('kClaudeModel').value = cfg.claudeModel;
-  $('kOpenAIModel').value = cfg.openAIModel;
+// ── SETTINGS ──
+function openPanel(){
+  $('kAnt').value=cfg.ant; $('kOAI').value=cfg.oai; $('kEl').value=cfg.el;
+  $('kVoice').value=cfg.voice; $('kWx').value=cfg.wx;
+  $('kClaudeModel').value=cfg.claudeModel;
   $('panel').classList.add('open');
 }
-function closePanel() { $('panel').classList.remove('open'); }
-
-$('gear').addEventListener('click', openPanel);
-$('cancelBtn').addEventListener('click', closePanel);
-$('saveBtn').addEventListener('click', async () => {
-  cfg.ant = $('kAnt').value.trim();
-  cfg.oai = $('kOAI').value.trim();
-  cfg.el = $('kEl').value.trim();
-  cfg.voice = $('kVoice').value.trim() || 'pNInz6obpgDQGcFmaJgB';
-  cfg.wx = $('kWx').value.trim();
-  cfg.claudeModel = $('kClaudeModel').value.trim() || 'claude-haiku-4-5-20251001';
-  cfg.openAIModel = $('kOpenAIModel').value.trim() || 'gpt-4o-mini';
-
-  saveLS('ant', cfg.ant);
-  saveLS('oai', cfg.oai);
-  saveLS('el', cfg.el);
-  saveLS('voice', cfg.voice);
-  saveLS('wx', cfg.wx);
-  saveLS('claudeModel', cfg.claudeModel);
-  saveLS('openAIModel', cfg.openAIModel);
-
-  closePanel();
-  await startApp();
+function closePanel(){$('panel').classList.remove('open');}
+$('gear').addEventListener('click',openPanel);
+$('cancelBtn').addEventListener('click',closePanel);
+$('saveBtn').addEventListener('click',async()=>{
+  cfg.ant=$('kAnt').value.trim(); cfg.oai=$('kOAI').value.trim();
+  cfg.el=$('kEl').value.trim(); cfg.voice=$('kVoice').value.trim()||'pNInz6obpgDQGcFmaJgB';
+  cfg.wx=$('kWx').value.trim(); cfg.claudeModel=$('kClaudeModel').value.trim()||'claude-haiku-4-5';
+  saveLS('ant',cfg.ant); saveLS('oai',cfg.oai); saveLS('el',cfg.el);
+  saveLS('voice',cfg.voice); saveLS('wx',cfg.wx); saveLS('claudeModel',cfg.claudeModel);
+  closePanel(); await startApp();
 });
-$('testVoiceBtn').addEventListener('click', async () => {
-  cfg.el = $('kEl').value.trim();
-  cfg.voice = $('kVoice').value.trim() || 'pNInz6obpgDQGcFmaJgB';
-  await unlockAudio();
-  await speak('Taco voice check. Crispy shell, clean audio.');
+$('testVoiceBtn').addEventListener('click',async()=>{
+  cfg.el=$('kEl').value.trim(); cfg.voice=$('kVoice').value.trim()||'pNInz6obpgDQGcFmaJgB';
+  await unlockAudio(); await speak('Taco voice check. Crispy shell, clean audio.');
 });
 
-// =====================
-// STARTUP
-// =====================
-async function startApp() {
-  if (appStarted) {
-    goToSleep('Say Taco');
-    return;
-  }
-  if (!cfg.ant && !cfg.oai) {
-    openPanel();
-    $('startOverlay').classList.remove('open');
-    return;
-  }
-
-  appStarted = true;
+// ── STARTUP ──
+async function startApp(){
+  if(!cfg.ant&&!cfg.oai){openPanel();$('startOverlay').classList.remove('open');return;}
+  appStarted=true;
   $('startOverlay').classList.remove('open');
-  await requestLandscape();
-  await requestWakeLock();
-  await unlockAudio();
-
-  setMode('happy');
-  setStatus('Starting...');
-  setWakeLight('active');
-  await speak('Taco online. Say my name when you need me J.R.');
+  await requestLandscape(); await requestWakeLock(); await unlockAudio();
+  faceMode='happy'; setStatus(''); setWakeLight('active');
+  await speak("Taco online. Say my name when you need me J.R.");
   goToSleep('Say Taco');
 }
 
-$('startBtn').addEventListener('click', startApp);
-
-window.addEventListener('load', () => {
+$('startBtn').addEventListener('click',startApp);
+window.addEventListener('load',()=>{
   resizeCanvas();
-  if (!supportsSpeechRecognition()) {
-    setStatus('Use Chrome');
-    setWakeLight('off');
-    setMode('sad');
-  }
-  if (!cfg.ant && !cfg.oai) {
-    $('startOverlay').classList.remove('open');
-    openPanel();
-  } else {
-    $('startOverlay').classList.add('open');
-  }
+  if(!supportsSR()){setStatus('Use Chrome');setWakeLight('off');faceMode='sad';}
+  if(!cfg.ant&&!cfg.oai){$('startOverlay').classList.remove('open');openPanel();}
+  else $('startOverlay').classList.add('open');
 });
 </script>
 </body>
