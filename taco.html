@@ -137,28 +137,29 @@ let expr={open:1,width:1,browRaise:0,browAngle:0,browAsym:0,pupilX:0,pupilY:0,pu
 let target={...expr,color:[48,209,88]};
 
 const EXPRESSIONS={
-  idle:{open:1,width:1,browRaise:0,browAngle:0,browAsym:0,pupilX:0,pupilY:0,pupilScale:1,glow:1,color:[48,209,88],blink:185,tilt:0,crosshair:0,wink:0},
-  listening:{open:1.25,width:1.08,browRaise:.2,browAngle:-.04,browAsym:0,pupilX:0,pupilY:-.04,pupilScale:1,glow:1.18,color:[48,225,104],blink:150,tilt:0,crosshair:0,wink:0},
-  thinking:{open:.72,width:1,browRaise:-.04,browAngle:.18,browAsym:0,pupilX:.18,pupilY:-.14,pupilScale:.95,glow:.95,color:[127,119,221],blink:300,tilt:0,crosshair:0,wink:0},
-  talking:{open:.9,width:1.07,browRaise:.06,browAngle:-.03,browAsym:0,pupilX:0,pupilY:-.04,pupilScale:1,glow:1.08,color:[48,209,88],blink:150,tilt:0,crosshair:0,wink:0},
-  happy:{open:.62,width:1.18,browRaise:.1,browAngle:-.12,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:1,glow:1.18,color:[55,235,100],blink:125,tilt:0,crosshair:0,wink:0},
-  excited:{open:1.44,width:1.18,browRaise:.34,browAngle:-.08,browAsym:0,pupilX:0,pupilY:-.06,pupilScale:1.05,glow:1.35,color:[75,255,130],blink:85,tilt:0,crosshair:0,wink:0},
-  surprised:{open:1.6,width:1.2,browRaise:.42,browAngle:0,browAsym:0,pupilX:0,pupilY:0,pupilScale:.76,glow:1.42,color:[245,255,245],blink:240,tilt:0,crosshair:0,wink:0},
-  confused:{open:.88,width:1.02,browRaise:.05,browAngle:.11,browAsym:.34,pupilX:-.12,pupilY:-.02,pupilScale:.95,glow:.98,color:[130,170,255],blink:170,tilt:.04,crosshair:0,wink:0},
-  sad:{open:.58,width:.95,browRaise:-.1,browAngle:-.22,browAsym:0,pupilX:0,pupilY:.15,pupilScale:.92,glow:.72,color:[88,145,230],blink:230,tilt:0,crosshair:0,wink:0},
-  angry:{open:.48,width:1.05,browRaise:-.28,browAngle:.32,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:.82,glow:1.42,color:[255,70,58],blink:105,tilt:0,crosshair:0,wink:0},
-  sleepy:{open:.32,width:1.12,browRaise:-.16,browAngle:0,browAsym:0,pupilX:0,pupilY:.08,pupilScale:.95,glow:.55,color:[105,165,130],blink:330,tilt:0,crosshair:0,wink:0},
-  bored:{open:.45,width:1.08,browRaise:-.08,browAngle:.02,browAsym:0,pupilX:.08,pupilY:.05,pupilScale:.98,glow:.72,color:[115,180,120],blink:360,tilt:0,crosshair:0,wink:0},
-  laughing:{open:.12,width:1.22,browRaise:.12,browAngle:-.2,browAsym:0,pupilX:0,pupilY:0,pupilScale:1,glow:1.22,color:[80,255,120],blink:70,tilt:0,crosshair:0,wink:0},
-  curious:{open:.98,width:1.04,browRaise:.12,browAngle:-.02,browAsym:.3,pupilX:.22,pupilY:-.03,pupilScale:1,glow:1.08,color:[70,220,170],blink:160,tilt:0,crosshair:0,wink:0},
-  love:{open:.55,width:1.2,browRaise:.16,browAngle:-.18,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:1,glow:1.28,color:[255,105,190],blink:130,tilt:0,crosshair:0,wink:0},
-  nervous:{open:1.18,width:1.02,browRaise:.12,browAngle:.08,browAsym:.16,pupilX:0,pupilY:0,pupilScale:.84,glow:.9,color:[90,210,170],blink:80,tilt:0,crosshair:0,wink:0},
-  frustrated:{open:.5,width:1.04,browRaise:-.2,browAngle:.27,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:.86,glow:1.25,color:[255,148,40],blink:95,tilt:0,crosshair:0,wink:0},
-  proud:{open:.55,width:1.15,browRaise:.14,browAngle:-.06,browAsym:0,pupilX:0,pupilY:-.08,pupilScale:1,glow:1.1,color:[255,210,85],blink:160,tilt:0,crosshair:0,wink:0},
-  scared:{open:1.55,width:1.12,browRaise:.28,browAngle:.24,browAsym:0,pupilX:0,pupilY:0,pupilScale:.52,glow:1.2,color:[210,245,255],blink:65,tilt:0,crosshair:0,wink:0},
-  celebrating:{open:1.16,width:1.18,browRaise:.2,browAngle:-.12,browAsym:0,pupilX:0,pupilY:-.05,pupilScale:1,glow:1.28,color:[48,209,88],blink:60,tilt:0,crosshair:0,wink:0},
-  focused:{open:.5,width:1.04,browRaise:-.16,browAngle:.16,browAsym:0,pupilX:0,pupilY:0,pupilScale:.7,glow:1.3,color:[60,255,125],blink:240,tilt:0,crosshair:1,wink:0},
-  playful:{open:1,width:1.1,browRaise:.14,browAngle:-.1,browAsym:.2,pupilX:.1,pupilY:-.04,pupilScale:1,glow:1.15,color:[60,240,120],blink:110,tilt:0,crosshair:0,wink:1}
+  // Softer Deskimon/Eilik-style expression set. Eyes stay round and cute by default.
+  idle:{open:1.12,width:1.03,browRaise:.18,browAngle:-.04,browAsym:0,pupilX:0,pupilY:-.03,pupilScale:1,glow:1.04,color:[70,235,125],blink:230,tilt:0,crosshair:0,wink:0},
+  listening:{open:1.3,width:1.08,browRaise:.34,browAngle:-.08,browAsym:0,pupilX:0,pupilY:-.04,pupilScale:1,glow:1.22,color:[65,245,135],blink:190,tilt:0,crosshair:0,wink:0},
+  thinking:{open:.86,width:1.04,browRaise:.08,browAngle:.08,browAsym:0,pupilX:.18,pupilY:-.12,pupilScale:.96,glow:.98,color:[145,135,240],blink:310,tilt:0,crosshair:0,wink:0},
+  talking:{open:1.02,width:1.07,browRaise:.18,browAngle:-.05,browAsym:0,pupilX:0,pupilY:-.04,pupilScale:1,glow:1.12,color:[70,235,125],blink:180,tilt:0,crosshair:0,wink:0},
+  happy:{open:.78,width:1.18,browRaise:.26,browAngle:-.16,browAsym:0,pupilX:0,pupilY:-.03,pupilScale:1,glow:1.24,color:[80,255,135],blink:160,tilt:0,crosshair:0,wink:0},
+  excited:{open:1.42,width:1.18,browRaise:.44,browAngle:-.1,browAsym:0,pupilX:0,pupilY:-.06,pupilScale:1.05,glow:1.38,color:[90,255,150],blink:120,tilt:0,crosshair:0,wink:0},
+  surprised:{open:1.58,width:1.16,browRaise:.5,browAngle:0,browAsym:0,pupilX:0,pupilY:0,pupilScale:.78,glow:1.42,color:[245,255,245],blink:260,tilt:0,crosshair:0,wink:0},
+  confused:{open:.98,width:1.04,browRaise:.2,browAngle:.05,browAsym:.28,pupilX:-.12,pupilY:-.02,pupilScale:.95,glow:1.02,color:[135,180,255],blink:210,tilt:.03,crosshair:0,wink:0},
+  sad:{open:.72,width:1.02,browRaise:.02,browAngle:-.16,browAsym:0,pupilX:0,pupilY:.14,pupilScale:.92,glow:.78,color:[100,155,240],blink:250,tilt:0,crosshair:0,wink:0},
+  angry:{open:.68,width:1.04,browRaise:-.04,browAngle:.16,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:.88,glow:1.18,color:[255,105,85],blink:145,tilt:0,crosshair:0,wink:0},
+  sleepy:{open:.42,width:1.12,browRaise:-.02,browAngle:0,browAsym:0,pupilX:0,pupilY:.08,pupilScale:.95,glow:.58,color:[115,180,140],blink:360,tilt:0,crosshair:0,wink:0},
+  bored:{open:.58,width:1.08,browRaise:.02,browAngle:.02,browAsym:0,pupilX:.08,pupilY:.05,pupilScale:.98,glow:.76,color:[125,190,130],blink:380,tilt:0,crosshair:0,wink:0},
+  laughing:{open:.2,width:1.22,browRaise:.28,browAngle:-.22,browAsym:0,pupilX:0,pupilY:0,pupilScale:1,glow:1.28,color:[95,255,145],blink:90,tilt:0,crosshair:0,wink:0},
+  curious:{open:1.08,width:1.06,browRaise:.28,browAngle:-.04,browAsym:.26,pupilX:.22,pupilY:-.03,pupilScale:1,glow:1.1,color:[80,230,180],blink:200,tilt:0,crosshair:0,wink:0},
+  love:{open:.72,width:1.18,browRaise:.32,browAngle:-.18,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:1,glow:1.3,color:[255,115,195],blink:160,tilt:0,crosshair:0,wink:0},
+  nervous:{open:1.18,width:1.04,browRaise:.24,browAngle:.05,browAsym:.14,pupilX:0,pupilY:0,pupilScale:.86,glow:.95,color:[95,220,180],blink:115,tilt:0,crosshair:0,wink:0},
+  frustrated:{open:.72,width:1.05,browRaise:0,browAngle:.14,browAsym:0,pupilX:0,pupilY:-.02,pupilScale:.9,glow:1.14,color:[255,160,70],blink:135,tilt:0,crosshair:0,wink:0},
+  proud:{open:.78,width:1.15,browRaise:.3,browAngle:-.08,browAsym:0,pupilX:0,pupilY:-.08,pupilScale:1,glow:1.15,color:[255,220,95],blink:190,tilt:0,crosshair:0,wink:0},
+  scared:{open:1.48,width:1.12,browRaise:.4,browAngle:.14,browAsym:0,pupilX:0,pupilY:0,pupilScale:.58,glow:1.22,color:[215,245,255],blink:100,tilt:0,crosshair:0,wink:0},
+  celebrating:{open:1.24,width:1.18,browRaise:.36,browAngle:-.14,browAsym:0,pupilX:0,pupilY:-.05,pupilScale:1,glow:1.3,color:[75,235,130],blink:100,tilt:0,crosshair:0,wink:0},
+  focused:{open:.72,width:1.04,browRaise:.04,browAngle:.08,browAsym:0,pupilX:0,pupilY:0,pupilScale:.74,glow:1.22,color:[70,255,135],blink:260,tilt:0,crosshair:1,wink:0},
+  playful:{open:1.1,width:1.12,browRaise:.32,browAngle:-.12,browAsym:.2,pupilX:.1,pupilY:-.04,pupilScale:1,glow:1.18,color:[75,245,135],blink:150,tilt:0,crosshair:0,wink:1}
 };
 
 function resizeCanvas(){
@@ -264,26 +265,87 @@ function drawParticles(){
 }
 function drawEye(x,y,er,side){
   const sign=side==='left'?-1:1;
-  const winkAmount=(faceMode==='playful'&&side==='left')?(0.9+0.1*Math.sin(frame*.25)):0;
-  const localOpen=Math.max(.04,blinkV*(expr.open*(1-winkAmount)+.08*winkAmount));
-  const px=expr.pupilX*er*sign;const py=expr.pupilY*er;
-  ctx.save();ctx.translate(x,y);ctx.rotate(expr.tilt*sign);ctx.scale(expr.width,localOpen);
-  const g=ctx.createRadialGradient(0,0,0,0,0,er*2.25*expr.glow);g.addColorStop(0,colorA(.35));g.addColorStop(.48,colorA(.1));g.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,er*2.1,er*2.05,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=colorRGB();ctx.beginPath();ctx.ellipse(0,0,er,er*1.02,0,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle=colorA(.48);ctx.lineWidth=Math.max(2,er*.09);ctx.beginPath();ctx.ellipse(0,0,er*.74,er*.74,0,0,Math.PI*2);ctx.stroke();
-  ctx.fillStyle='#020204';ctx.beginPath();ctx.ellipse(px,py,er*.4*expr.pupilScale,er*.4*expr.pupilScale,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.92)';ctx.beginPath();ctx.ellipse(px-er*.22,py-er*.22,er*.15,er*.11,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.ellipse(px+er*.15,py-er*.28,er*.07,er*.05,0,0,Math.PI*2);ctx.fill();
-  const lidExtra=Math.max(0,1-expr.open);
-  ctx.fillStyle='#050509';ctx.beginPath();ctx.ellipse(0,-er*(.9+lidExtra*.08),er*1.22,er*(.75+lidExtra*.85),0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(0,er*(.96+lidExtra*.05),er*1.18,er*(.62+lidExtra*.55),0,0,Math.PI*2);ctx.fill();
+  const winkAmount=(faceMode==='playful'&&side==='left')?(0.86+0.1*Math.sin(frame*.25)):0;
+  const localOpen=Math.max(.12,blinkV*(expr.open*(1-winkAmount)+.12*winkAmount));
+  const px=expr.pupilX*er*sign;
+  const py=expr.pupilY*er;
+  const eyeOpenScale=Math.max(.28,Math.min(1.55,localOpen));
+  const eyeWidthScale=Math.max(.9,Math.min(1.22,expr.width));
+
+  // Glow halo first. This keeps the face soft instead of sharp/angry.
+  ctx.save();
+  ctx.translate(x,y);
+  const halo=ctx.createRadialGradient(0,0,0,0,0,er*2.35*expr.glow);
+  halo.addColorStop(0,colorA(.33));
+  halo.addColorStop(.5,colorA(.11));
+  halo.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=halo;
+  ctx.beginPath();
+  ctx.ellipse(0,0,er*2.05,er*2.0,0,0,Math.PI*2);
+  ctx.fill();
+
+  // Main eye: large round cartoon circles, only gently squashed for expressions.
+  ctx.scale(eyeWidthScale,eyeOpenScale);
+  const grad=ctx.createRadialGradient(-er*.25,-er*.3,er*.12,0,0,er*1.2);
+  grad.addColorStop(0,'rgba(255,255,255,.95)');
+  grad.addColorStop(.12,colorA(.95));
+  grad.addColorStop(1,colorRGB());
+  ctx.fillStyle=grad;
+  ctx.beginPath();
+  ctx.ellipse(0,0,er,er,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle=colorA(.42);
+  ctx.lineWidth=Math.max(2,er*.055);
+  ctx.beginPath();
+  ctx.ellipse(0,0,er*.86,er*.86,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.fillStyle='#020204';
+  ctx.beginPath();
+  ctx.ellipse(px,py,er*.36*expr.pupilScale,er*.36*expr.pupilScale,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.94)';
+  ctx.beginPath();
+  ctx.ellipse(px-er*.22,py-er*.24,er*.17,er*.12,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';
+  ctx.beginPath();
+  ctx.ellipse(px+er*.15,py-er*.28,er*.075,er*.055,0,0,Math.PI*2);
+  ctx.fill();
   ctx.restore();
+
+  // Soft eyelids for sleepy/laughing states only. No harsh top/bottom cuts for idle.
+  const lidAmount=Math.max(0,.78-eyeOpenScale);
+  if(lidAmount>0.01){
+    ctx.save();
+    ctx.fillStyle='#050509';
+    ctx.beginPath();
+    ctx.ellipse(x,y-er*(.92-lidAmount*.06),er*1.18,er*(.35+lidAmount*.9),0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x,y+er*(.96-lidAmount*.05),er*1.16,er*(.28+lidAmount*.7),0,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Thin friendly eyebrow arcs. No thick angry bars.
   const asym=expr.browAsym*sign;
-  const browY=y-er*(1.22+expr.browRaise+asym*.28);
-  const browW=er*.95;const angle=expr.browAngle*er*sign*.6+asym*er*.18;
-  ctx.save();ctx.strokeStyle=colorA(.76);ctx.lineWidth=Math.max(3,er*.1);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-browW,browY+angle);ctx.quadraticCurveTo(x,browY-er*(.1+Math.abs(expr.browAngle)*.2),x+browW,browY-angle);ctx.stroke();ctx.restore();
-  if(expr.crosshair>.4){ctx.save();ctx.strokeStyle=colorA(.48);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x-er*1.28,y);ctx.lineTo(x+er*1.28,y);ctx.moveTo(x,y-er*1.28);ctx.lineTo(x,y+er*1.28);ctx.stroke();ctx.restore();}
+  const browY=y-er*(1.28+expr.browRaise+asym*.2);
+  const browW=er*.8;
+  const angle=expr.browAngle*er*sign*.38+asym*er*.12;
+  ctx.save();
+  ctx.strokeStyle=colorA(.64);
+  ctx.lineWidth=Math.max(2,er*.045);
+  ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(x-browW,browY+angle);
+  ctx.quadraticCurveTo(x,browY-er*(.16+Math.abs(expr.browAngle)*.1),x+browW,browY-angle);
+  ctx.stroke();
+  ctx.restore();
+
+  if(expr.crosshair>.4){
+    ctx.save();ctx.strokeStyle=colorA(.42);ctx.lineWidth=1.5;ctx.beginPath();
+    ctx.moveTo(x-er*1.18,y);ctx.lineTo(x+er*1.18,y);ctx.moveTo(x,y-er*1.18);ctx.lineTo(x,y+er*1.18);ctx.stroke();ctx.restore();
+  }
 }
 function drawVoiceWave(){
   if(faceMode!=='talking') return;
@@ -339,45 +401,124 @@ let audioCtx=null;
 let wakeLock=null;
 let currentAudioUrl=null;
 let audioUnlocked=false;
+let keepAliveSource=null;
+let keepAliveGain=null;
+let audioPrimedOnce=false;
 const audioEl=$('audioUnlocker');
 const SILENT_WAV='data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
-async function unlockAudio(){
-  try{
-    audioEl.src=SILENT_WAV;audioEl.muted=false;audioEl.volume=1;audioEl.playsInline=true;
-    await audioEl.play().catch((e)=>console.warn('silent audio prime failed:',e));
-    audioEl.pause();audioEl.currentTime=0;
-  }catch(e){console.warn('HTMLAudio unlock failed:',e);}
+
+function cleanupAudioUrlLater(url){
+  if(!url)return;
+  setTimeout(()=>{try{URL.revokeObjectURL(url);}catch(_){}},1500);
+}
+
+async function startSilentAudioKeepAlive(){
   try{
     audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
     if(audioCtx.state==='suspended') await audioCtx.resume();
-    const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();gain.gain.value=.00001;osc.connect(gain).connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.04);
+    if(!keepAliveSource){
+      keepAliveGain=audioCtx.createGain();
+      keepAliveGain.gain.value=0.000001;
+      keepAliveSource=audioCtx.createConstantSource();
+      keepAliveSource.offset.value=0.000001;
+      keepAliveSource.connect(keepAliveGain).connect(audioCtx.destination);
+      keepAliveSource.start();
+    }
+  }catch(e){console.warn('Silent audio keepalive failed:',e);}
+}
+
+async function unlockAudio(){
+  // Must be called from the Start/tap gesture on Android Chrome.
+  try{
+    audioEl.setAttribute('playsinline','');
+    audioEl.setAttribute('webkit-playsinline','');
+    audioEl.preload='auto';
+    audioEl.crossOrigin='anonymous';
+    audioEl.muted=false;
+    audioEl.volume=1;
+    audioEl.src=SILENT_WAV;
+    audioEl.load();
+    await audioEl.play().catch((e)=>console.warn('silent audio prime failed:',e));
+    audioEl.pause();
+    audioEl.currentTime=0;
+    audioPrimedOnce=true;
+  }catch(e){console.warn('HTMLAudio unlock failed:',e);}
+
+  try{
+    audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') await audioCtx.resume();
+    const b=audioCtx.createBuffer(1,1,audioCtx.sampleRate);
+    const src=audioCtx.createBufferSource();
+    const gain=audioCtx.createGain();
+    gain.gain.value=0.000001;
+    src.buffer=b;
+    src.connect(gain).connect(audioCtx.destination);
+    src.start(0);
+    await startSilentAudioKeepAlive();
   }catch(e){console.warn('WebAudio unlock failed:',e);}
   audioUnlocked=true;
 }
+
 async function playElevenBlob(blob){
   if(!blob||blob.size<100) throw new Error('empty ElevenLabs audio');
-  if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null;}
+  if(audioCtx&&audioCtx.state==='suspended') await audioCtx.resume().catch(()=>{});
+
+  const previousUrl=currentAudioUrl;
   currentAudioUrl=URL.createObjectURL(blob);
-  audioEl.pause();audioEl.src=currentAudioUrl;audioEl.load();audioEl.muted=false;audioEl.volume=1;audioEl.playsInline=true;
+  cleanupAudioUrlLater(previousUrl);
+
+  // Reuse the exact same pre-unlocked audio element. Android Chrome behaves better this way.
+  audioEl.onended=null;
+  audioEl.onerror=null;
+  audioEl.pause();
+  audioEl.removeAttribute('src');
+  audioEl.load();
+  audioEl.src=currentAudioUrl;
+  audioEl.preload='auto';
+  audioEl.muted=false;
+  audioEl.volume=1;
+  audioEl.playsInline=true;
+  audioEl.setAttribute('playsinline','');
+  audioEl.setAttribute('webkit-playsinline','');
+
   try{
-    await audioEl.play();
-    await new Promise((resolve)=>{let done=false;const finish=()=>{if(done)return;done=true;resolve();};audioEl.onended=finish;audioEl.onerror=finish;setTimeout(finish,45000);});
+    const playPromise=audioEl.play();
+    if(playPromise) await playPromise;
+    await new Promise((resolve,reject)=>{
+      let done=false;
+      const finish=()=>{if(done)return;done=true;resolve();};
+      const fail=()=>{if(done)return;done=true;reject(new Error('HTMLAudio element error'));};
+      audioEl.onended=finish;
+      audioEl.onerror=fail;
+      setTimeout(finish,60000);
+    });
     return;
   }catch(e){
-    console.warn('HTMLAudio play failed, trying WebAudio:',e);
+    console.warn('HTMLAudio play failed, trying WebAudio decoder:',e);
   }
-  if(!audioCtx) throw new Error('No AudioContext available');
+
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') await audioCtx.resume();
   const arr=await blob.arrayBuffer();
   const buf=await audioCtx.decodeAudioData(arr.slice(0));
-  await new Promise((resolve)=>{const src=audioCtx.createBufferSource();src.buffer=buf;src.connect(audioCtx.destination);src.onended=resolve;src.start(0);});
+  await new Promise((resolve)=>{
+    const src=audioCtx.createBufferSource();
+    const gain=audioCtx.createGain();
+    gain.gain.value=1;
+    src.buffer=buf;
+    src.connect(gain).connect(audioCtx.destination);
+    src.onended=resolve;
+    src.start(0);
+  });
 }
+
 async function speak(text,forcedEmotion){
   const clean=String(text||'').trim();if(!clean)return false;
   stopAllRecognition();
   setExpression(forcedEmotion||'talking');
   if(!cfg.el){console.warn('No ElevenLabs key');setExpression('sad',1400);return false;}
   try{
+    if(!audioUnlocked||!audioPrimedOnce) await unlockAudio();
     if(audioCtx&&audioCtx.state==='suspended') await audioCtx.resume();
     const r=await fetchTimeout(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(cfg.voice||'pNInz6obpgDQGcFmaJgB')}?output_format=mp3_44100_128`,{
       method:'POST',
@@ -457,42 +598,118 @@ async function runSurpriseThenCurious(){setExpression('surprised',450);flashAlph
 
 // ===================== SPEECH RECOGNITION =====================
 const WAKE_WORDS=['taco','hey taco','okay taco','ok taco','yo taco','tacos'];
+const IS_ANDROID=/Android/i.test(navigator.userAgent||'');
 let wakeRecog=null,listenRecog=null,tapRecog=null,wakeStarting=false,awake=false,processing=false,intentionallyStoppedWake=false,listenSession=0,followTimer=null,sleepTimer=null,restartTimer=null,wakeFailures=0,tapping=false;
+let wakeGeneration=0;
+let wakeRestartAt=0;
 function normalizeSpeech(text){return String(text||'').toLowerCase().replace(/[.,!?;:]/g,' ').replace(/\s+/g,' ').trim();}
 function containsWakeWord(text){const t=` ${normalizeSpeech(text)} `;return WAKE_WORDS.some(w=>t.includes(` ${w} `));}
 function stripWakeWord(text){let t=String(text||'').trim();for(const w of WAKE_WORDS){const re=new RegExp(`^\\s*${w.replace(/ /g,'\\s+')}\\s*[,?!-]*\\s*`,'i');t=t.replace(re,'').trim();}return t;}
-function stopRecognition(rec,abort=false){if(!rec)return;try{abort?rec.abort():rec.stop();}catch(_){}}
-function stopAllRecognition(){intentionallyStoppedWake=true;stopRecognition(wakeRecog,true);stopRecognition(listenRecog,true);stopRecognition(tapRecog,true);}
+function stopRecognition(rec,abort=false){if(!rec)return;try{abort?rec.abort():rec.stop();}catch(_){} }
+function stopAllRecognition(){intentionallyStoppedWake=true;++wakeGeneration;stopRecognition(wakeRecog,true);stopRecognition(listenRecog,true);stopRecognition(tapRecog,true);}
 function clearConversationTimers(){clearTimeout(followTimer);clearTimeout(sleepTimer);followTimer=null;sleepTimer=null;}
-function scheduleWakeRestart(ms=700){clearTimeout(restartTimer);restartTimer=setTimeout(()=>{if(!appStarted||awake||processing||document.visibilityState!=='visible')return;startWakeRecog();},ms);}
-function startWakeRecog(){
+function scheduleWakeRestart(ms){
+  clearTimeout(restartTimer);
+  const minDelay=IS_ANDROID?2600:700;
+  const delay=Math.max(ms||0,minDelay);
+  wakeRestartAt=performance.now()+delay;
+  restartTimer=setTimeout(()=>{
+    if(!appStarted||awake||processing||document.visibilityState!=='visible')return;
+    startWakeRecog(true);
+  },delay);
+}
+function startWakeRecog(isSilentRestart=false){
   if(!appStarted)return;
   if(!supportsSpeechRecognition()){setStatus('Chrome speech not supported');setWakeLight('off');setExpression('sad');return;}
   if(awake||processing||wakeStarting||document.visibilityState!=='visible')return;
-  const SR=RecognitionCtor();wakeStarting=true;intentionallyStoppedWake=false;setWakeLight('on');
-  try{stopRecognition(wakeRecog,true);}catch(_){}
-  wakeRecog=new SR();wakeRecog.lang='en-US';wakeRecog.continuous=true;wakeRecog.interimResults=true;wakeRecog.maxAlternatives=3;
-  wakeRecog.onstart=()=>{wakeStarting=false;wakeFailures=0;setStatus('Say Taco');setExpression('idle');setWakeLight('on');};
-  wakeRecog.onresult=(e)=>{if(awake||processing)return;for(let i=e.resultIndex;i<e.results.length;i++){const result=e.results[i];for(let j=0;j<result.length;j++){const transcript=result[j].transcript||'';const conf=result[j].confidence||0;if(result.isFinal&&conf>0&&conf<.35)continue;if(containsWakeWord(transcript)){onWakeWordDetected(stripWakeWord(transcript));return;}}}};
-  wakeRecog.onerror=(e)=>{wakeStarting=false;console.warn('Wake recognition error:',e.error);if(e.error==='not-allowed'||e.error==='service-not-allowed'){setStatus('Allow mic in Chrome');setWakeLight('off');setExpression('sad');return;}if(e.error==='audio-capture'){setStatus('Mic unavailable');setWakeLight('off');setExpression('sad');return;}wakeFailures++;};
-  wakeRecog.onend=()=>{wakeStarting=false;if(intentionallyStoppedWake||awake||processing||!appStarted)return;scheduleWakeRestart(Math.min(5000,500+wakeFailures*500));};
-  try{wakeRecog.start();}catch(e){wakeStarting=false;console.warn('wakeRecog start error:',e);scheduleWakeRestart(1200);}
+  const SR=RecognitionCtor();
+  const myWake=++wakeGeneration;
+  wakeStarting=true;
+  intentionallyStoppedWake=false;
+  setWakeLight('on');
+  if(!isSilentRestart)setStatus('Say Taco');
+  try{stopRecognition(wakeRecog,true);}catch(_){ }
+  wakeRecog=new SR();
+  wakeRecog.lang='en-US';
+  wakeRecog.continuous=true;
+  wakeRecog.interimResults=true;
+  wakeRecog.maxAlternatives=3;
+  let heardRecently=false;
+  let softKeepAliveTimer=null;
+
+  const armSoftKeepAlive=()=>{
+    clearTimeout(softKeepAliveTimer);
+    // Android Chrome often ends recognition after short silence. This does not force a noisy restart;
+    // it waits longer and lets the existing recognizer keep running whenever possible.
+    softKeepAliveTimer=setTimeout(()=>{heardRecently=false;},IS_ANDROID?12000:7000);
+  };
+
+  wakeRecog.onstart=()=>{
+    if(myWake!==wakeGeneration)return;
+    wakeStarting=false;
+    wakeFailures=0;
+    setWakeLight('on');
+    setExpression('idle');
+    setStatus('Say Taco');
+    armSoftKeepAlive();
+  };
+  wakeRecog.onresult=(e)=>{
+    if(myWake!==wakeGeneration||awake||processing)return;
+    heardRecently=true;
+    armSoftKeepAlive();
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const result=e.results[i];
+      for(let j=0;j<result.length;j++){
+        const transcript=result[j].transcript||'';
+        const conf=result[j].confidence||0;
+        if(result.isFinal&&conf>0&&conf<.35)continue;
+        if(containsWakeWord(transcript)){onWakeWordDetected(stripWakeWord(transcript));return;}
+      }
+    }
+  };
+  wakeRecog.onerror=(e)=>{
+    if(myWake!==wakeGeneration)return;
+    wakeStarting=false;
+    console.warn('Wake recognition error:',e.error);
+    clearTimeout(softKeepAliveTimer);
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      setStatus('Allow mic in Chrome');setWakeLight('off');setExpression('sad');return;
+    }
+    if(e.error==='audio-capture'){
+      setStatus('Mic unavailable');setWakeLight('off');setExpression('sad');return;
+    }
+    // no-speech is normal on Android. Do not flicker the UI or immediately restart the mic.
+    if(e.error!=='no-speech') wakeFailures++;
+  };
+  wakeRecog.onend=()=>{
+    if(myWake!==wakeGeneration)return;
+    wakeStarting=false;
+    clearTimeout(softKeepAliveTimer);
+    if(intentionallyStoppedWake||awake||processing||!appStarted)return;
+    const base=IS_ANDROID?3200:700;
+    const penalty=Math.min(5000,wakeFailures*650);
+    scheduleWakeRestart(base+penalty+(heardRecently?600:0));
+  };
+  try{wakeRecog.start();}
+  catch(e){wakeStarting=false;console.warn('wakeRecog start error:',e);scheduleWakeRestart(IS_ANDROID?3500:1200);}
 }
 async function onWakeWordDetected(possibleCommand=''){
-  if(awake||processing)return;awake=true;processing=false;clearConversationTimers();intentionallyStoppedWake=true;stopRecognition(wakeRecog,true);setWakeLight('active');setExpression('happy');setStatus('');
+  if(awake||processing)return;awake=true;processing=false;clearConversationTimers();intentionallyStoppedWake=true;++wakeGeneration;stopRecognition(wakeRecog,true);setWakeLight('active');setExpression('happy');setStatus('');
   await speak("Yeah? What's up?",'happy');
   const direct=stripWakeWord(possibleCommand).trim();if(direct.length>2)await handleQuestion(direct,true);else startListenRecog({followup:false});
 }
 function startListenRecog({followup=false}={}){
   if(!appStarted||processing||!awake)return;if(!supportsSpeechRecognition()){goToSleep('Chrome speech not supported');return;}
-  clearConversationTimers();const SR=RecognitionCtor();const mySession=++listenSession;let finalText='',lastInterim='',heardAnything=false,silenceTimer=null;
+  clearConversationTimers();const SR=RecognitionCtor();const mySession=++listenSession;let finalText='',lastInterim='',heardAnything=false,silenceTimer=null,hardTimer=null;
   stopRecognition(listenRecog,true);listenRecog=new SR();listenRecog.lang='en-US';listenRecog.continuous=false;listenRecog.interimResults=true;listenRecog.maxAlternatives=1;
-  const resetSilenceTimer=()=>{clearTimeout(silenceTimer);silenceTimer=setTimeout(()=>{if(listenSession===mySession&&listenRecog)stopRecognition(listenRecog,false);},followup?5500:8500);};
-  listenRecog.onstart=()=>{setWakeLight('active');setExpression('listening');setStatus(followup?'Follow up?':'Listening...');resetSilenceTimer();};
+  const silenceMs=followup?(IS_ANDROID?8000:5500):(IS_ANDROID?12000:8500);
+  const hardMs=followup?(IS_ANDROID?14500:10000):(IS_ANDROID?18000:13000);
+  const resetSilenceTimer=()=>{clearTimeout(silenceTimer);silenceTimer=setTimeout(()=>{if(listenSession===mySession&&listenRecog)stopRecognition(listenRecog,false);},silenceMs);};
+  listenRecog.onstart=()=>{setWakeLight('active');setExpression('listening');setStatus(followup?'Follow up?':'Listening...');resetSilenceTimer();hardTimer=setTimeout(()=>{if(listenSession===mySession&&listenRecog)stopRecognition(listenRecog,false);},hardMs);};
   listenRecog.onresult=(e)=>{if(listenSession!==mySession)return;let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const txt=e.results[i][0]?.transcript||'';if(txt.trim())heardAnything=true;if(e.results[i].isFinal)finalText+=txt+' ';else interim+=txt;}lastInterim=interim.trim();setStatus(followup?'Follow up?':'Listening...');resetSilenceTimer();};
-  listenRecog.onerror=(e)=>{console.warn('Listen recognition error:',e.error);clearTimeout(silenceTimer);if(listenSession!==mySession)return;if(e.error==='no-speech'){if(followup)goToSleep();else startListenRecog({followup:false});return;}goToSleep(e.error==='not-allowed'?'Allow mic in Chrome':'Say Taco');};
-  listenRecog.onend=async()=>{clearTimeout(silenceTimer);if(listenSession!==mySession)return;let text=(finalText.trim()||lastInterim.trim()).trim();text=stripWakeWord(text);if(!text){if(followup||!heardAnything)goToSleep();else startListenRecog({followup:false});return;}await handleQuestion(text,false);};
-  try{listenRecog.start();}catch(e){console.warn('listenRecog start error:',e);setTimeout(()=>{if(listenSession===mySession&&awake&&!processing)startListenRecog({followup});},450);}
+  listenRecog.onerror=(e)=>{console.warn('Listen recognition error:',e.error);clearTimeout(silenceTimer);clearTimeout(hardTimer);if(listenSession!==mySession)return;if(e.error==='no-speech'){if(followup)goToSleep();else startListenRecog({followup:false});return;}goToSleep(e.error==='not-allowed'?'Allow mic in Chrome':'Say Taco');};
+  listenRecog.onend=async()=>{clearTimeout(silenceTimer);clearTimeout(hardTimer);if(listenSession!==mySession)return;let text=(finalText.trim()||lastInterim.trim()).trim();text=stripWakeWord(text);if(!text){if(followup||!heardAnything)goToSleep();else startListenRecog({followup:false});return;}await handleQuestion(text,false);};
+  try{listenRecog.start();}catch(e){console.warn('listenRecog start error:',e);setTimeout(()=>{if(listenSession===mySession&&awake&&!processing)startListenRecog({followup});},IS_ANDROID?900:450);}
 }
 async function handleQuestion(text,fromWakeDirect=false){
   if(!text||processing)return;clearConversationTimers();processing=true;setStatus('Thinking...');setExpression('thinking');
@@ -504,10 +721,10 @@ async function handleQuestion(text,fromWakeDirect=false){
   await sleep(emotion==='surprised'?350:120);
   await speak(reply,emotion);
   processing=false;if(!awake)return;setExpression('listening');setWakeLight('active');setStatus('Follow up?');
-  followTimer=setTimeout(()=>{if(awake&&!processing)startListenRecog({followup:true});},350);
-  sleepTimer=setTimeout(()=>{if(awake&&!processing)goToSleep();},6500);
+  followTimer=setTimeout(()=>{if(awake&&!processing)startListenRecog({followup:true});},450);
+  sleepTimer=setTimeout(()=>{if(awake&&!processing)goToSleep();},IS_ANDROID?9000:6500);
 }
-function goToSleep(statusText='Say Taco'){clearConversationTimers();awake=false;processing=false;++listenSession;stopRecognition(listenRecog,true);setExpression('idle');setStatus(statusText);setWakeLight(appStarted?'on':'off');intentionallyStoppedWake=false;scheduleWakeRestart(650);}
+function goToSleep(statusText='Say Taco'){clearConversationTimers();awake=false;processing=false;++listenSession;stopRecognition(listenRecog,true);setExpression('idle');setStatus(statusText);setWakeLight(appStarted?'on':'off');intentionallyStoppedWake=false;scheduleWakeRestart(IS_ANDROID?3200:650);}
 
 // ===================== TAP BACKUP =====================
 $('tapBtn').addEventListener('click',async()=>{
@@ -516,7 +733,7 @@ $('tapBtn').addEventListener('click',async()=>{
   if(!supportsSpeechRecognition()){setStatus('Use Chrome');setExpression('sad');return;}
   clearConversationTimers();tapping=true;awake=false;processing=false;intentionallyStoppedWake=true;stopAllRecognition();$('tapBtn').classList.add('hot');setExpression('listening');setWakeLight('active');setStatus('Listening...');
   const SR=RecognitionCtor();let finalText='',lastInterim='';tapRecog=new SR();tapRecog.lang='en-US';tapRecog.continuous=false;tapRecog.interimResults=true;
-  const tapTimer=setTimeout(()=>{if(tapRecog)stopRecognition(tapRecog,false);},9000);
+  const tapTimer=setTimeout(()=>{if(tapRecog)stopRecognition(tapRecog,false);},IS_ANDROID?14000:9000);
   tapRecog.onresult=(e)=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const txt=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=txt+' ';else interim+=txt;}lastInterim=interim.trim();setStatus('Listening...');};
   tapRecog.onerror=(e)=>console.warn('Tap recognition error:',e.error);
   tapRecog.onend=async()=>{clearTimeout(tapTimer);tapping=false;$('tapBtn').classList.remove('hot');const text=stripWakeWord((finalText.trim()||lastInterim.trim()).trim());if(!text){goToSleep();return;}awake=true;await handleQuestion(text,false);};
